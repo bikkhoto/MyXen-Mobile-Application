@@ -1,5 +1,6 @@
 // lib/features/emergency/emergency_service.dart
 import 'dart:typed_data';
+import 'dart:math';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../core/crypto/encryption/aes_gcm_wrapper.dart';
 import '../../core/crypto/crypto_utils.dart';
@@ -21,10 +22,10 @@ class EmergencyService {
   Future<void> initialize() async {
     final existingKey = await _secureStorage.read(key: _emergencyKeyStorageKey);
     if (existingKey == null) {
-      final key = CryptoUtils.generateRandomBytes(32);
+      final key = _generateRandomBytes(32);
       await _secureStorage.write(
         key: _emergencyKeyStorageKey,
-        value: CryptoUtils.bytesToHex(key),
+        value: bytesToHex(key),
       );
     }
   }
@@ -35,7 +36,13 @@ class EmergencyService {
     if (keyHex == null) {
       throw Exception('Emergency encryption key not found');
     }
-    return CryptoUtils.hexToBytes(keyHex);
+    return hexToBytes(keyHex);
+  }
+
+  /// Generate random bytes
+  Uint8List _generateRandomBytes(int length) {
+    final random = Random.secure();
+    return Uint8List.fromList(List<int>.generate(length, (_) => random.nextInt(256)));
   }
 
   /// Check if SOS is enabled
@@ -97,7 +104,7 @@ class EmergencyService {
       
       await _secureStorage.write(
         key: _emergencyContactsKey,
-        value: encrypted.toBase64(),
+        value: encrypted.base64,
       );
     } catch (e) {
       throw Exception('Failed to save contacts: $e');
@@ -133,10 +140,10 @@ class EmergencyService {
       // Store encrypted payload
       await _secureStorage.write(
         key: _sosPayloadKey,
-        value: encrypted.toBase64(),
+        value: encrypted.base64,
       );
 
-      return encrypted.toBase64();
+      return encrypted.base64;
     } catch (e) {
       throw Exception('Failed to create emergency payload: $e');
     }

@@ -1,36 +1,36 @@
 name: myxen
 description: A secure Solana wallet and payments app for $MYXN token
-publish_to: 'none'
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  
+
   # State Management
   flutter_riverpod: ^2.4.9
   riverpod_annotation: ^2.3.3
-  
+
   # Networking
   dio: ^5.4.0
-  
+
   # Secure Storage
   flutter_secure_storage: ^9.0.0
-  
+
   # Local Database
   drift: ^2.14.0
   sqlite3_flutter_libs: ^0.5.18
   path_provider: ^2.1.1
   path: ^1.8.3
-  
+
   # Biometrics
   local_auth: ^2.1.7
   local_auth_android: ^1.0.35
   local_auth_ios: ^1.1.5
-  
+
   # Cryptography
   bip39: ^1.0.6
   ed25519_hd_key: ^2.2.0
@@ -38,11 +38,12 @@ dependencies:
   pointycastle: ^3.7.3
   cryptography: ^2.5.0
   convert: ^3.1.1
-  
+
   # QR Code
   qr_flutter: ^4.1.0
   mobile_scanner: ^3.5.5
-  
+  image_picker: ^1.0.7
+
   # UI & Utilities
   cupertino_icons: ^1.0.6
   intl: ^0.18.1
@@ -51,7 +52,7 @@ dependencies:
   permission_handler: ^11.1.0
   device_info_plus: ^9.1.1
   package_info_plus: ^5.0.1
-  
+
   # Utils
   equatable: ^2.0.5
   freezed_annotation: ^2.4.1
@@ -61,28 +62,37 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  
+
   # Code Generation
   build_runner: ^2.4.7
   riverpod_generator: ^2.3.9
   freezed: ^2.4.6
   json_serializable: ^6.7.1
   drift_dev: ^2.14.0
-  
+
   # Linting
   flutter_lints: ^3.0.1
-  
+
   # Testing
   mockito: ^5.4.4
+  flutter_launcher_icons: ^0.13.1
   integration_test:
     sdk: flutter
 
 flutter:
   uses-material-design: true
-  
+
   assets:
     - assets/images/
     - assets/icons/
     - assets/data/emergency_numbers.json
-  
 
+# App Icon Configuration
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "Image/app-icon.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#6366F1"
+  adaptive_icon_foreground: "Image/app-icon.png"
+  remove_alpha_ios: true

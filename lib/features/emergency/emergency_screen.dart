@@ -278,7 +278,7 @@ class _EmergencyScreenState extends ConsumerState<EmergencyScreen> {
                       ),
                     )
                   else
-                    ...contacts.map((contact) => Card(
+                    ..._contacts.map((contact) => Card(
                           margin: const EdgeInsets.only(bottom: AppTheme.spacingMd),
                           color: AppTheme.surfaceDark,
                           child: ListTile(

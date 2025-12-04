@@ -1,5 +1,6 @@
 // lib/features/kyc/kyc_service.dart
 import 'dart:typed_data';
+import 'dart:math';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../core/crypto/encryption/aes_gcm_wrapper.dart';
 import '../../core/crypto/crypto_utils.dart';
@@ -18,10 +19,10 @@ class KycService {
     final existingKey = await _secureStorage.read(key: _kycKeyStorageKey);
     if (existingKey == null) {
       // Generate new encryption key for KYC data
-      final key = CryptoUtils.generateRandomBytes(32);
+      final key = _generateRandomBytes(32);
       await _secureStorage.write(
         key: _kycKeyStorageKey,
-        value: CryptoUtils.bytesToHex(key),
+        value: bytesToHex(key),
       );
     }
   }
@@ -32,7 +33,13 @@ class KycService {
     if (keyHex == null) {
       throw Exception('KYC encryption key not found');
     }
-    return CryptoUtils.hexToBytes(keyHex);
+    return hexToBytes(keyHex);
+  }
+
+  /// Generate random bytes
+  Uint8List _generateRandomBytes(int length) {
+    final random = Random.secure();
+    return Uint8List.fromList(List<int>.generate(length, (_) => random.nextInt(256)));
   }
 
   /// Encrypt and store KYC document
@@ -55,7 +62,7 @@ class KycService {
       final documentKey = 'kyc_doc_$documentType';
       await _secureStorage.write(
         key: documentKey,
-        value: encrypted.toBase64(),
+        value: encrypted.base64,
       );
 
       // Store metadata (encrypted)
@@ -67,7 +74,7 @@ class KycService {
       
       await _secureStorage.write(
         key: '${documentKey}_metadata',
-        value: encryptedMetadata.toBase64(),
+        value: encryptedMetadata.base64,
       );
 
       print('KYC document stored: $documentType');
@@ -152,7 +159,7 @@ class KycService {
 
       await _secureStorage.write(
         key: _kycDataKey,
-        value: encrypted.toBase64(),
+        value: encrypted.base64,
       );
 
       print('KYC submitted for verification');
