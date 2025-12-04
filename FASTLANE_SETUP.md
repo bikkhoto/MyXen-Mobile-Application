@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.svg" alt="MyXenPay Logo" width="400">
+  <img src="assets/myxenpay-logo-dark.png" alt="MyXenPay Logo" width="400">
 </p>
 
 <h1 align="center">MyXenPay — Production-Ready Fastlane Setup</h1>

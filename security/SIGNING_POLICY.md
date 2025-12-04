@@ -1,175 +1,333 @@
 <p align="center">
-  <img src="../assets/logo.svg" alt="MyXenPay Logo" width="400">
+  <img src="../assets/myxenpay-logo-dark.png" alt="MyXenPay Logo" width="400">
 </p>
 
 <h1 align="center">SIGNING_POLICY.md</h1>
 
 <p align="center">
-  <strong>MyXen Foundation — Mobile Application (MyXenPay)</strong>
+  <strong>MyXen Foundation — Mobile Application (MyXenPay)</strong><br>
+  <em>Application Signing, Key Management & Secure Release Policy</em>
 </p>
 
 ---
 
-## Purpose
-This document defines policies and procedures for creation, storage, usage, rotation, and emergency handling of cryptographic signing keys used to sign mobile application artifacts (Android keystore / iOS signing certificates), related code signing assets, and any signing keys used for release automation.
+# 1. Purpose
 
-It enforces strong controls to protect user funds and reputation by ensuring signing keys are tightly guarded, auditable, and recoverable.
+This policy defines the standards, controls, and operational procedures for the creation, protection, use, and rotation of cryptographic signing keys required for:
 
----
+* Android application signing
+* iOS application signing
+* App Store Connect / Google Play uploads
+* Code-signing used in CI/CD automation
+* Artifact integrity validation
+* Secure reproducible releases
 
-## Scope
-Applies to:
-- Android upload/signing keys (keystore.jks, key alias/passwords)
-- iOS distribution certificates & provisioning profiles (P12, mobileprovision)
-- App Store Connect API keys
-- CI signing tokens (HSM/KMS connectors, short-lived tokens)
-- Any custom signing service
+This ensures MyXenPay remains **secure, trustworthy, and resistant to tampering**, supporting MyXen Foundation's mission of building a human-safe, privacy-preserving financial system.
 
 ---
 
-## Key Principles
-1. **Least Privilege** — Only named roles may access signing materials.
-2. **Separation of Duties** — Build, sign, and approval responsibilities separated across roles.
-3. **Short-lived Credentials** — Prefer OIDC / ephemeral tokens; avoid long-lived secrets.
-4. **Tamper-evident Storage** — Use HSM or cloud KMS with audit logging.
-5. **Reproducibility & Audit Trail** — Every signed artifact must be traceable to:
-   - commit SHA
-   - CI build ID
-   - approver identities and timestamps
-6. **Automated Rotation & Emergency Procedures** — Scheduled rotation and documented emergency revocation.
+# 2. Scope
+
+This policy applies to:
+
+| Signing Component                         | Platform | Description                                        |
+| ----------------------------------------- | -------- | -------------------------------------------------- |
+| **Android Upload Key**                    | Android  | Used to authenticate uploaded builds.              |
+| **Android App Signing Key**               | Android  | Managed by Google Play App Signing.                |
+| **iOS Distribution Certificate**          | iOS      | Used to sign IPA for App Store.                    |
+| **Apple App Store Connect API Key (.p8)** | iOS      | Used to authenticate TestFlight/App Store uploads. |
+| **CI/CD Signing Credentials**             | Both     | Ephemeral keys retrieved via OIDC/KMS.             |
+| **Internal Testing Certificates**         | Both     | Used for QA/internal builds only.                  |
 
 ---
 
-## Roles & Permissions
-- **Release Manager**
-  - Initiates releases; approves production signing.
-  - Cannot perform emergency rotation alone.
-- **Security Lead**
-  - Reviews cryptographic posture; approves key creation/rotation.
-- **Build Engineer (CI Owner)**
-  - Maintains CI signing pipeline, integrates HSM/KMS connectors.
-- **Operations / SRE**
-  - Manages secrets store (vault) and HSM/KMS infrastructure.
-- **Auditor**
-  - Periodically reviews logs, accesses, and rotation records.
+# 3. Security Objectives
 
-Access Controls:
-- Require MFA on all accounts with signing permissions.
-- Use RBAC in cloud KMS and secrets manager (least privilege).
-- Approvals for production signing must include at least Release Manager + Security Lead.
+1. Prevent unauthorized signing of APK/AAB/IPA artifacts.
+2. Prevent tampering or substitution of signed build artifacts.
+3. Ensure all signing operations are **auditable** and **traceable**.
+4. Maintain key confidentiality using HSM/KMS and RBAC controls.
+5. Maintain **reproducible builds** enabling artifact verification.
+6. Rapid detection and response for any potential key compromise.
 
 ---
 
-## Storage & Tooling Standards
-Preferred storage:
-1. **HSM** (Hardware Security Module) — On-prem HSM or cloud HSM (CloudHSM/Azure KeyVault HSM/Google Cloud HSM) for private keys used to sign critical artifacts.
-2. **KMS** (Cloud Key Management Service) — Use for lower-risk signing operations and to issue ephemeral signing credentials.
-3. **Secrets Manager / Vault** — Use HashiCorp Vault / AWS Secrets Manager / GCP Secret Manager for storing wrapper secrets (e.g., keystore file encrypted blob) with strict access policy and audit enabled.
+# 4. Roles & Responsibilities
 
-**Do NOT** store raw keystores / p12 files in plain text in repo or general shared drives.
+| Role                  | Responsibility                                                      |
+| --------------------- | ------------------------------------------------------------------- |
+| **Release Manager**   | Initiates releases, approves signing. Cannot rotate keys alone.     |
+| **Security Lead**     | Oversees key lifecycle, approves key access, reviews signing logs.  |
+| **Build/CI Engineer** | Implements pipeline, integrates HSM/KMS, ensures reproducibility.   |
+| **SRE/DevOps**        | Manages vault/KMS/HSM configuration and audit logs.                 |
+| **Auditor**           | Reviews key usage logs, compliance, and rotation reports quarterly. |
 
----
-
-## CI Integration Guidelines
-- Prefer GitHub OIDC with cloud provider IAM roles to retrieve short-lived signing credentials (avoid long-lived JSON or password secrets in CI).
-- If using a JSON key (Google Play) or App Store Connect key, store the key as an encrypted secret in Vault and provide the CI job scoped, time-limited access to a transient file.
-- Signing in CI must run inside ephemeral runners or dedicated, hardened signing agents with network controls and restricted access.
-
-Example safe flow:
-1. PR pipeline produces unsigned artifacts in ephemeral storage.
-2. Artifacts are uploaded to a secure artifact store (access controlled).
-3. A protected environment (GitHub Environment) step with required reviewers triggers a signing job.
-4. Signing job fetches ephemeral credentials via OIDC or Vault, signs artifacts, records hashes and metadata, then pushes to distribution.
+**Separation of duties is mandatory.**
+No single role may create, approve, and use signing keys.
 
 ---
 
-## Key Generation & Format
-- **Android**: RSA or EC keystore — use a 4096-bit RSA or >= 3072 ECC key (store in PKCS12/JKS as required).
-- **iOS**: Use Apple recommended certificate chain and store p12 with a strong passphrase.
-- **App Store Connect API**: Prefer `.p8` API key with `KEY_ID` and `ISSUER_ID`, store in vault.
+# 5. Key Inventory
 
-Key metadata to record upon creation:
-- Key ID / alias
-- Purpose (upload, app-signing, release)
-- Creator and approvers
-- Creation date & expiry/rotation date
-- Location (KMS/HSM path)
-- Thumbprint / public fingerprint (SHA256)
+| Key Type                     | Storage                  | Responsible Team   | Rotation Frequency  | Revocation Method           |
+| ---------------------------- | ------------------------ | ------------------ | ------------------- | --------------------------- |
+| Android Upload Key           | Vault + encrypted backup | Security           | 12 months           | Keystore replacement        |
+| Android App Signing Key      | Google Play              | Google             | Google-managed      | Through Play Console        |
+| iOS Distribution Certificate | HSM / Vault              | Security + Release | 12 months           | Revoke in Developer Console |
+| ASC API Key (.p8)            | Vault                    | Security           | 12 months           | Revoke in App Store Connect |
+| CI Ephemeral Keys            | KMS via OIDC             | CI Engineering     | None (short-lived)  | TTL expiry                  |
+| Debug/Test Keys              | Local Dev Machines       | Dev Leads          | Rotated per quarter | Regenerate                  |
 
----
-
-## Rotation Policy
-### Regular Rotation
-- **Upload/Signing Keys (non-revocation-critical)**: rotate annually.
-- **High-sensitivity keys (HSM-protected production keys)**: rotate every 6 months.
-- **App Store Connect API keys**: rotate annually or on personnel change.
-- **Google Play JSON keys**: rotate annually; prefer OIDC where rotation is implicit.
-
-### Rotation Procedure
-1. Plan rotation (create `rotation/` ticket, schedule low-traffic time).
-2. Generate new key in KMS/HSM (or request new certificate).
-3. Stage new key in test environment; verify signing & installability.
-4. Update CI to reference new key (with a switch-over window).
-5. Revoke old key after verification and confirm no dependent artifacts remain signed only with the old key (if required).
-6. Record rotation details in the `key-rotation-log.md`.
-
-### Emergency Rotation
-- Triggered on suspected key compromise.
-- Immediate actions:
-  1. Revoke compromised key in KMS/HSM if possible.
-  2. Generate new key with higher privilege and push critical hotfix using emergency lane (hotfix release).
-  3. Notify platform providers (Google Play / Apple) and follow their key re-provisioning instructions (this can be time-consuming; pre-document provider procedures).
-  4. Run full post-incident review and update rotation cadence if needed.
+A full machine-readable inventory is kept at:
+`security/keys/key-inventory.csv`
 
 ---
 
-## Backup & Recovery
-- Maintain an encrypted backup of key material in at least two geographically separated secure vaults (only for keys that cannot be recovered from HSM).
-- Backups must be encrypted with a separate key stored in HSM and only accessible by a quorum of designated officers (e.g., 2-of-3).
-- Test key recovery annually in a controlled exercise and document the results.
+# 6. Key Storage Requirements
+
+## 6.1 Allowed storage methods
+
+Signing keys **must** be stored using one of the following:
+
+### **1. Cloud HSM (Preferred)**
+
+* AWS CloudHSM
+* Azure Dedicated HSM
+* Google Cloud HSM
+
+### **2. Cloud KMS**
+
+* AWS KMS
+* Azure Key Vault
+* Google KMS
+
+### **3. HashiCorp Vault Enterprise (with audit logs)**
+
+### NOT allowed
+
+* GitHub Secrets (for raw key files)
+* Local machines
+* Repo commits
+* Third-party servers without attestation
+* Slack/Drive/Email transmission
 
 ---
 
-## Audit & Logging
-- Enable and retain audit logging for:
-  - Key creation, access, rotation, and deletion events (HSM/KMS logs)
-  - CI job requests for signing credentials (include CI run ID)
-  - Manual export actions
-- Retain logs for minimum 2 years (or per compliance requirements).
-- Perform quarterly access reviews to revoke stale access.
+# 7. CI/CD Signing Architecture (Mandatory)
+
+All signing must occur in one of the following ways:
+
+## **Option A — CI retrieves short-lived credentials using GitHub OIDC**
+
+* No static JSON keys
+* CI job receives a **temporary token**
+* Token is used to sign via KMS/HSM
+* Token auto-expires in minutes
+
+## **Option B — CI calls Remote Signing Service**
+
+* Artifact → hash calculated
+* Hash sent to signing service
+* HSM signs → signature returned
+* CI assembles signed package
+
+## **Option C — Upload Key is decrypted in ephemeral runner with strict controls**
+
+Used only if HSM is not fully integrated yet.
+
+Constraints:
+
+* Runner must be **ephemeral**
+* Memory must be wiped after execution
+* Decryption allowed only inside protected GitHub Environment
+* Logging must never include secrets
 
 ---
 
-## Developer / Debug Builds
-- Developer builds may use separate debug keys that are NOT used for distribution.
-- Ensure debug keys are clearly labeled and excluded from release automation.
-- Never publish artifacts signed with debug keys to production channels.
+# 8. Key Rotation Procedures
+
+## 8.1 Standard Rotation (12 months)
+
+1. Create rotation issue with ID (tracked in `key-rotation-log.md`)
+2. Generate new key in KMS/HSM
+3. Test-signed builds verified on physical devices
+4. Update CI pipeline to reference new key (staged rollout)
+5. Perform release using new key
+6. Revoke old key after 2-week overlap
+7. Document rotation event & signatures
+
+## 8.2 Automatic Rotation (ASC API keys, KMS ephemeral keys)
+
+* Automatically handled by provider
+* Audit logs must confirm rotation success
+* Replace local references with new KEY_ID
+
+## 8.3 High-Security Rotation (Compromise Suspected)
+
+Triggered under these conditions:
+
+* Sudden illegitimate signed build surfaces
+* Key used unexpectedly outside release window
+* Suspicious auth logs via KMS/HSM
+
+Steps:
+
+1. Immediate revocation via provider (Google/Apple/KMS)
+2. Disable all deployments
+3. Generate emergency key
+4. Issue a hotfix release signed by emergency key
+5. Conduct full incident investigation
+6. Notify impacted users if required
+7. Update internal postmortem within 72 hours
 
 ---
 
-## Provider-specific Notes
-- **Google Play**: use Google Play App Signing. Keep a secure copy of the upload key; protect the app signing key via Google.
-- **Apple**: prefer App Store Connect API keys (p8). Keep P12 only when APNs or other flows require it.
-- Maintain documented contact points with Google & Apple for key revocation and support cases.
+# 9. Artifact Integrity Controls
+
+Every artifact must include:
+
+| Check                | Required |
+| -------------------- | -------- |
+| SHA256 hash          | ✔        |
+| Build ID             | ✔        |
+| Commit SHA           | ✔        |
+| CI Runner ID         | ✔        |
+| Signer Key ID        | ✔        |
+| Release Approver IDs | ✔        |
+
+Store under:
+`artifacts/<version>/manifest.json`
+
+A sample manifest:
+
+```json
+{
+  "artifact": "app-release.aab",
+  "sha256": "f83b91cceb8e1bb...",
+  "commit": "7ef9c1d",
+  "ci_build": "github-run-88422",
+  "key_id": "kms-key-23-prod",
+  "approved_by": ["release_manager", "security_lead"],
+  "signed_at": "2025-12-05T16:22:17Z"
+}
+```
 
 ---
 
-## Documentation & Recordkeeping
-- Maintain `security/keys/` directory (metadata only — never the secret material) with:
-  - `key-inventory.csv` or equivalent
-  - `key-rotation-log.md`
-  - `signing-approvals/` (signed approval artifacts for each release)
-- Each release record must include:
-  - Commit SHA
-  - CI build ID
-  - Artifact SHA256
-  - Signer key ID and vault path
-  - Approver identities (Release Manager, Security Lead) with timestamps
+# 10. Approval Workflow (Mandatory for Production)
+
+Before any signing occurs:
+
+1. Release Manager approves commit for release
+2. Security Lead approves signing request
+3. CI triggers job under protected GitHub Environment
+4. Artifact gets signed
+5. Signed artifact is uploaded to TestFlight/Play Internal
+
+Production rollout requires:
+
+* Second manual approval step
+* Monitoring windows (1% → 10% → 50% → 100%)
 
 ---
 
-## Final Notes
-- Periodically test the whole release pipeline including sign, upload, and install on devices as part of the release cadence.
-- Reassess provider capabilities and new best practices every 12 months.
+# 11. Backup & Recovery Policy
 
-*Adopt these policies and update them when infrastructure or compliance requirements change.*
+## Backup Requirements
+
+* Encrypted at-rest using AES-256-GCM
+* Stored separately from the vault (geo redundancy)
+* Access only via quorum (2-of-3 rule)
+
+## Recovery Testing
+
+* Annual dry-run
+* Must validate:
+
+  * Recovery of backup
+  * Ability to re-sign a test build
+  * Audit logging confirmed
+
+---
+
+# 12. Incident Response
+
+Triggers:
+
+* Unauthorized build appears
+* Suspicious signing job
+* Key exposure leak
+* CI compromise
+
+Immediate actions:
+
+1. Revoke affected key
+2. Disable CI publish workflows
+3. Deploy forced application update (if needed)
+4. Forensic review of CI logs, audit logs, commit history
+5. Rotate all relevant credentials
+6. Publish internal incident report within 48 hours
+
+---
+
+# 13. Compliance & Audit Requirements
+
+This policy supports compliance with:
+
+* ISO 27001 Annex A (Cryptographic Controls)
+* SOC 2 Security & Integrity categories
+* GDPR (data protection & privacy integrity)
+* OWASP MASVS Level 2 (mobile security)
+
+Quarterly:
+
+* Audit logs reviewed
+* Key inventory verified
+* All keys validated against rotation schedule
+
+---
+
+# 14. Developer Guidelines (Critical)
+
+Developers **must not:**
+
+* Store keys in `.env`
+* Store keystores in repo
+* Store p12/.p8 files in repo
+* Upload keys to Google Drive, Dropbox, Telegram, WhatsApp
+* Email keys to team members
+
+Developers **must:**
+
+* Use dedicated debug keys for development
+* Never sign local builds with production keys
+* Report any suspicion of compromise immediately
+
+---
+
+# 15. Document Revision Process
+
+* Policy must be reviewed every **6 months**
+* Major revisions require approval from:
+
+  1. Security Lead
+  2. CTO / Foundation Board
+  3. Compliance Officer (if applicable)
+
+---
+
+# 16. Appendix: Key Rotation Log Template
+
+`security/keys/key-rotation-log.md`:
+
+```markdown
+# Key Rotation Log
+
+| Date | Key ID | Platform | Performed By | Approved By | Reason | Notes |
+|------|--------|----------|--------------|-------------|--------|-------|
+| 2025-01-01 | kms-key-23-prod | Android | security_lead | release_manager | Annual rotation | Success |
+```
+
+---
+
+# End of SIGNING_POLICY.md

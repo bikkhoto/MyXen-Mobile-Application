@@ -1,0 +1,7 @@
+Key ID,Key Type,Platform,Storage Location,Responsible Team,Creation Date,Expiry Date,Rotation Frequency,Revocation Method,Status,Notes
+,Android Upload Key,Android,Vault + encrypted backup,Security,,,12 months,Keystore replacement,Active,
+,Android App Signing Key,Android,Google Play,Google,,,Google-managed,Through Play Console,Active,Managed by Google Play App Signing
+,iOS Distribution Certificate,iOS,HSM / Vault,Security + Release,,,12 months,Revoke in Developer Console,Active,
+,ASC API Key (.p8),iOS,Vault,Security,,,12 months,Revoke in App Store Connect,Active,
+,CI Ephemeral Keys,Both,KMS via OIDC,CI Engineering,,,None (short-lived),TTL expiry,Active,
+,Debug/Test Keys,Both,Local Dev Machines,Dev Leads,,,Quarterly,Regenerate,Active,For development only
