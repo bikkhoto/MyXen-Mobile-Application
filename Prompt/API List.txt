@@ -1,0 +1,832 @@
+frontend logic, data structure, and styling needed to launch the MyXen Foundation V2 web experience.
+import React, { useState, useEffect } from 'react';
+import { 
+  Wallet, Globe, GraduationCap, ShoppingBag, Heart, 
+  Flame, Lock, ShieldCheck, Users, BarChart3, 
+  Smartphone, Building, Plane, ArrowRight, Menu, X, 
+  Copy, CheckCircle, Search, ExternalLink, Zap,
+  Briefcase, Coins, Landmark, MessageSquare, Code, Settings
+} from 'lucide-react';
+
+// --- DATA: THE 22 SERVICES ---
+const servicesData = [
+  {
+    id: 'myxenpay',
+    title: 'MyXenPay',
+    icon: <Wallet className="w-8 h-8" />,
+    tagline: 'Crypto Payments Made Simple',
+    category: 'Finance',
+    fee: '0.075% (0% for Students)',
+    description: 'Instant QR payments powered by Solana. Pay anyone, anywhere, in seconds. 0% fees for education payments.',
+    features: ['Instant QR Scan', '0% Student Fees', 'Merchant API', 'Global Settlement'],
+    problem: 'Traditional payments are slow (3-5 days) and expensive (2-3%).',
+    solution: 'Instant settlement on Solana with negligible fees.',
+  },
+  {
+    id: 'remittance',
+    title: 'Remittance',
+    icon: <Globe className="w-8 h-8" />,
+    tagline: 'Send Money Home, Not Fees',
+    category: 'Finance',
+    fee: '0.075%',
+    description: 'Cross-border transfers without the middleman tax. Send money home in seconds, not days.',
+    features: ['Real-time Rates', 'No Hidden Markups', 'Cash-out Options', 'SMS Notifications'],
+    problem: 'Migrant workers lose 7-10% to predatory remittance fees.',
+    solution: '0.075% flat fee transfers that arrive in <60 seconds.',
+  },
+  {
+    id: 'travel',
+    title: 'Travel',
+    icon: <Plane className="w-8 h-8" />,
+    tagline: 'Book the World with $MYXN',
+    category: 'Lifestyle',
+    fee: '0.075%',
+    description: 'Book flights, hotels, and experiences directly with crypto. Earn 2% cashback in $MYXN.',
+    features: ['600+ Airlines', '2M+ Hotels', 'NFT Tickets', '2% Cashback'],
+    problem: 'Crypto users must convert to fiat to travel, losing value to fees.',
+    solution: 'Native crypto booking engine with loyalty rewards.',
+  },
+  {
+    id: 'marketplace',
+    title: 'Marketplace',
+    icon: <ShoppingBag className="w-8 h-8" />,
+    tagline: 'Buy & Sell Anything',
+    category: 'Commerce',
+    fee: '5% Seller Fee',
+    description: 'The e-commerce platform where crypto is the currency. Escrow protection included.',
+    features: ['Escrow Protection', 'Global Shipping', 'Review System', 'Instant Payouts'],
+    problem: 'Sellers lose 15-20% on Amazon/eBay.',
+    solution: 'Decentralized marketplace with 5% fees and instant settlement.',
+  },
+  {
+    id: 'merchant',
+    title: 'Merchant System',
+    icon: <Building className="w-8 h-8" />,
+    tagline: 'Accept Crypto Like Cash',
+    category: 'Commerce',
+    fee: '0.075%',
+    description: 'Point-of-sale solution for businesses. 97% cheaper than credit card processing.',
+    features: ['QR POS', 'Inventory Sync', 'Employee Accounts', 'Fiat Auto-Convert'],
+    problem: 'Small businesses lose 3% of revenue to card processors.',
+    solution: '0.075% fees save merchants thousands annually.',
+  },
+  {
+    id: 'university',
+    title: 'University Platform',
+    icon: <GraduationCap className="w-8 h-8" />,
+    tagline: 'Education Without Barriers',
+    category: 'Education',
+    fee: '0%',
+    description: 'Tuition payments with 0% fees. Instant confirmation for enrollment.',
+    features: ['Zero Fees', 'Installment Plans', 'Scholarship Grants', 'Instant Enroll'],
+    problem: 'International students pay high wire fees and wait days for confirmation.',
+    solution: 'Fee-free, instant education payments funded by Treasury.',
+  },
+  {
+    id: 'freelancer',
+    title: 'Freelancer',
+    icon: <Briefcase className="w-8 h-8" />,
+    tagline: 'Work. Get Paid. Fairly.',
+    category: 'Commerce',
+    fee: '0.05%',
+    description: 'Global gig economy platform with escrow. 0.05% fee vs Upwork\'s 20%.',
+    features: ['0.05% Fee', 'Milestone Escrow', 'Dispute Resolution', 'Portfolio Hosting'],
+    problem: 'Freelancers lose 20% of income to platform fees.',
+    solution: 'A fair marketplace where workers keep 99.95% of earnings.',
+  },
+  {
+    id: 'payroll',
+    title: 'Payroll System',
+    icon: <Coins className="w-8 h-8" />,
+    tagline: 'Pay Your Team Instantly',
+    category: 'Business',
+    fee: '0.05%',
+    description: 'Global payroll powered by crypto. Pay 1,000 employees in 30 seconds.',
+    features: ['Batch Payments', 'Tax Tools', 'Multi-Currency', 'Compliance Docs'],
+    problem: 'International payroll is slow, expensive, and complex.',
+    solution: 'One-click global payroll with minimal fees.',
+  },
+  {
+    id: 'charity',
+    title: 'MyXen Life',
+    icon: <Heart className="w-8 h-8" />,
+    tagline: 'Charity Built-In',
+    category: 'Impact',
+    fee: 'N/A',
+    description: '30% of all platform fees fund vetted causes. 100% on-chain transparency.',
+    features: ['DAO Voting', 'On-Chain Tracking', 'Direct Donation', 'Impact Reports'],
+    problem: 'Lack of transparency in traditional charity.',
+    solution: 'Automated, blockchain-verified donation flows.',
+  },
+  {
+    id: 'women',
+    title: 'Women Empowerment',
+    icon: <Users className="w-8 h-8" />,
+    tagline: 'Breaking Barriers',
+    category: 'Impact',
+    fee: 'N/A',
+    description: 'Zero-interest microloans, scholarships, and skill training for women globally.',
+    features: ['0% Microloans', 'Tech Scholarships', 'Mentorship', 'Grant Pool'],
+    problem: 'Women face systemic barriers to credit and education.',
+    solution: 'DeFi tools tailored for financial inclusion.',
+  },
+  {
+    id: 'meme',
+    title: 'Meme Engine',
+    icon: <Zap className="w-8 h-8" />,
+    tagline: 'Launch Viral Tokens',
+    category: 'DeFi',
+    fee: '1% Launch Fee',
+    description: 'Community-driven meme coin launches. Fair distribution, locked liquidity.',
+    features: ['Fair Launch', 'Auto-Lock', 'Community Vote', 'Creator Tools'],
+    problem: 'Meme coins are plagued by rug pulls and scams.',
+    solution: 'A safe, regulated launchpad with built-in utility.',
+  },
+  {
+    id: 'social',
+    title: 'Social Platform',
+    icon: <MessageSquare className="w-8 h-8" />,
+    tagline: 'Connect & Earn',
+    category: 'Social',
+    fee: 'N/A',
+    description: 'KYC-verified social network. Tip creators, share content, earn rewards.',
+    features: ['Crypto Tipping', 'NFT Profiles', 'No Bots', 'Content Monetization'],
+    problem: 'Social media users define value but earn nothing.',
+    solution: 'A platform where engagement equals earnings.',
+  },
+  {
+    id: 'locker',
+    title: 'MyXen Locker',
+    icon: <Lock className="w-8 h-8" />,
+    tagline: 'Lock, Vest, Earn',
+    category: 'DeFi',
+    fee: '0.1%',
+    description: 'Secure token locking for teams and liquidity. Trusted by investors.',
+    features: ['Vesting Schedules', 'Liquidity Locks', 'Proof of Lock', 'Audited'],
+    problem: 'Investors fear rug pulls from unlocked team tokens.',
+    solution: 'Transparent, immutable on-chain lockers.',
+  },
+  {
+    id: 'treasury',
+    title: 'Treasury Service',
+    icon: <Landmark className="w-8 h-8" />,
+    tagline: 'Transparent Funds',
+    category: 'Governance',
+    fee: 'N/A',
+    description: 'Multi-sig controlled, fully transparent treasury management.',
+    features: ['Live Dashboard', 'Multi-sig', 'Spending Reports', 'Asset Diversification'],
+    problem: 'Project funds are often mismanaged in secret.',
+    solution: '100% visibility on every dollar spent.',
+  },
+  {
+    id: 'burn',
+    title: 'Burn Engine',
+    icon: <Flame className="w-8 h-8" />,
+    tagline: 'Deflationary by Design',
+    category: 'DeFi',
+    fee: 'N/A',
+    description: 'Monthly automatic token burns. 10% of all fees are destroyed forever.',
+    features: ['Auto-Burn', 'Live Counter', 'Deflationary', 'Verifiable'],
+    problem: 'Inflationary tokens lose value over time.',
+    solution: 'Constant supply reduction drives scarcity.',
+  },
+  {
+    id: 'dao',
+    title: 'Governance DAO',
+    icon: <Users className="w-8 h-8" />,
+    tagline: 'Your Voice Matters',
+    category: 'Governance',
+    fee: 'N/A',
+    description: 'KYC-verified voting. One person, one vote. True decentralization.',
+    features: ['Sybil Resistant', 'Proposal System', 'Treasury Control', 'Voting Rewards'],
+    problem: 'Whales control "decentralized" governance.',
+    solution: '1-person-1-vote democracy enabled by KYC.',
+  },
+  {
+    id: 'multisig',
+    title: 'Multisig Service',
+    icon: <ShieldCheck className="w-8 h-8" />,
+    tagline: 'Team Security',
+    category: 'Security',
+    fee: '0.15%',
+    description: 'Multi-signature wallets for teams. No single point of failure.',
+    features: ['Custom Thresholds', 'Time-locks', 'Team Management', 'Social Recovery'],
+    problem: 'Single key compromises destroy projects.',
+    solution: 'Collaborative security for shared funds.',
+  },
+  {
+    id: 'notification',
+    title: 'Notification Service',
+    icon: <Smartphone className="w-8 h-8" />,
+    tagline: 'Stay Informed',
+    category: 'Infrastructure',
+    fee: 'Variable',
+    description: 'Real-time alerts via Push, SMS, and Email for all ecosystem events.',
+    features: ['Smart Routing', 'Price Alerts', 'Security Watch', 'Do Not Disturb'],
+    problem: 'Crypto users miss critical transaction alerts.',
+    solution: 'Omnichannel notifications ensuring you never miss a beat.',
+  },
+  {
+    id: 'analytics',
+    title: 'Analytics Service',
+    icon: <BarChart3 className="w-8 h-8" />,
+    tagline: 'Data Driven Decisions',
+    category: 'Infrastructure',
+    fee: 'Freemium',
+    description: 'Real-time insights across your entire MyXen ecosystem usage.',
+    features: ['Spending Tracker', 'Tax Reports', 'Investment ROI', 'Usage Stats'],
+    problem: 'Fragmented data makes financial planning hard.',
+    solution: 'Unified dashboard for all your crypto activity.',
+  },
+  {
+    id: 'support',
+    title: 'Support Center',
+    icon: <MessageSquare className="w-8 h-8" />,
+    tagline: '24/7 Human Help',
+    category: 'Support',
+    fee: 'Free',
+    description: '24/7 customer service across 150+ countries. Real humans.',
+    features: ['Live Chat', 'Ticket System', 'Knowledge Base', 'Global Access'],
+    problem: 'Crypto support is usually non-existent or bot-based.',
+    solution: 'Enterprise-grade human support.',
+  },
+  {
+    id: 'dev',
+    title: 'Developer Portal',
+    icon: <Code className="w-8 h-8" />,
+    tagline: 'Build the Future',
+    category: 'Infrastructure',
+    fee: 'Freemium',
+    description: 'APIs, SDKs, and webhooks to integrate MyXen services.',
+    features: ['Unified API', 'Sandbox', 'Webhooks', 'SDKs'],
+    problem: 'Building crypto apps is complex and fragmented.',
+    solution: 'One API key for the entire ecosystem.',
+  },
+  {
+    id: 'admin',
+    title: 'Admin Panel',
+    icon: <Settings className="w-8 h-8" />,
+    tagline: 'Complete Control',
+    category: 'Management',
+    fee: 'Enterprise',
+    description: 'CEO dashboard, KYC management, and fraud detection.',
+    features: ['Fraud AI', 'KYC Manager', 'Revenue Stats', 'System Config'],
+    problem: 'Managing crypto ecosystems requires complex tooling.',
+    solution: 'All-in-one command center.',
+  },
+];
+
+// --- COMPONENTS ---
+
+const Modal = ({ isOpen, onClose, children }) => {
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative">
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 p-2 bg-slate-800 rounded-full hover:bg-slate-700 transition-colors"
+        >
+          <X className="w-6 h-6 text-white" />
+        </button>
+        {children}
+      </div>
+    </div>
+  );
+};
+
+const ServiceCard = ({ service, onClick }) => (
+  <div 
+    onClick={() => onClick(service)}
+    className="group relative bg-slate-800/50 hover:bg-slate-800 border border-slate-700 hover:border-cyan-500/50 rounded-xl p-6 transition-all duration-300 cursor-pointer overflow-hidden"
+  >
+    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+    <div className="flex justify-between items-start mb-4">
+      <div className="p-3 bg-slate-900 rounded-lg text-cyan-400 group-hover:text-cyan-300 group-hover:scale-110 transition-transform">
+        {service.icon}
+      </div>
+      <span className="text-xs font-medium px-2 py-1 bg-slate-700/50 text-slate-300 rounded-full border border-slate-600">
+        {service.category}
+      </span>
+    </div>
+    <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">
+      {service.title}
+    </h3>
+    <p className="text-slate-400 text-sm line-clamp-2 mb-4">
+      {service.description}
+    </p>
+    <div className="flex items-center text-cyan-500 text-sm font-medium">
+      Explore Service <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+    </div>
+  </div>
+);
+
+const StatsCounter = ({ label, value, subtext, color = "text-white" }) => (
+  <div className="flex flex-col items-center p-4 bg-slate-800/30 rounded-lg border border-slate-700/50 backdrop-blur-sm">
+    <span className="text-slate-400 text-xs uppercase tracking-wider mb-1">{label}</span>
+    <span className={`text-2xl font-bold ${color}`}>{value}</span>
+    {subtext && <span className="text-xs text-slate-500 mt-1">{subtext}</span>}
+  </div>
+);
+
+const CopyAddress = ({ label, address }) => {
+  const [copied, setCopied] = useState(false);
+  
+  const handleCopy = () => {
+    navigator.clipboard.writeText(address); // May not work in iframe, using simple feedback
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="w-full">
+      <div className="flex justify-between text-xs text-slate-400 mb-1">
+        <span>{label}</span>
+        {copied && <span className="text-green-400 flex items-center gap-1"><CheckCircle className="w-3 h-3"/> Copied</span>}
+      </div>
+      <button 
+        onClick={handleCopy}
+        className="w-full flex items-center justify-between bg-slate-900 border border-slate-700 hover:border-cyan-500/50 rounded p-3 text-sm text-slate-300 transition-all group"
+      >
+        <span className="font-mono truncate mr-2">{address.substring(0, 20)}...{address.substring(address.length - 4)}</span>
+        <Copy className="w-4 h-4 text-slate-500 group-hover:text-cyan-400" />
+      </button>
+    </div>
+  );
+};
+
+// --- MAIN APP COMPONENT ---
+export default function MyXenApp() {
+  const [activeTab, setActiveTab] = useState('home');
+  const [selectedService, setSelectedService] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [walletConnected, setWalletConnected] = useState(false);
+  const [burnCount, setBurnCount] = useState(12500000);
+
+  // Simulate live burn counter
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBurnCount(prev => prev + Math.floor(Math.random() * 10));
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const renderServiceModal = () => {
+    if (!selectedService) return null;
+    return (
+      <Modal isOpen={!!selectedService} onClose={() => setSelectedService(null)}>
+        <div className="p-8">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="p-4 bg-cyan-500/10 rounded-xl text-cyan-400 border border-cyan-500/20">
+              {React.cloneElement(selectedService.icon, { className: "w-12 h-12" })}
+            </div>
+            <div>
+              <h2 className="text-3xl font-bold text-white">{selectedService.title}</h2>
+              <p className="text-cyan-400 text-lg">{selectedService.tagline}</p>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <div className="p-4 bg-slate-800 rounded-lg border border-slate-700">
+              <span className="text-slate-400 text-sm">Fee Structure</span>
+              <p className="text-xl font-bold text-white">{selectedService.fee}</p>
+            </div>
+            <div className="p-4 bg-slate-800 rounded-lg border border-slate-700">
+              <span className="text-slate-400 text-sm">Category</span>
+              <p className="text-xl font-bold text-white">{selectedService.category}</p>
+            </div>
+            <div className="p-4 bg-slate-800 rounded-lg border border-slate-700">
+              <span className="text-slate-400 text-sm">Status</span>
+              <p className="text-xl font-bold text-green-400 flex items-center gap-2">
+                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"/> Live
+              </p>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
+            <div>
+              <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <span className="text-red-400">⚠️</span> The Problem
+              </h3>
+              <p className="text-slate-300 bg-red-500/5 border border-red-500/10 p-4 rounded-lg">
+                {selectedService.problem}
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <span className="text-green-400">✅</span> The Solution
+              </h3>
+              <p className="text-slate-300 bg-green-500/5 border border-green-500/10 p-4 rounded-lg">
+                {selectedService.solution}
+              </p>
+            </div>
+          </div>
+
+          <div className="mb-8">
+            <h3 className="text-lg font-bold text-white mb-4">Key Features</h3>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {selectedService.features.map((feature, idx) => (
+                <div key={idx} className="flex items-center gap-3 text-slate-300">
+                  <CheckCircle className="w-5 h-5 text-cyan-500 shrink-0" />
+                  {feature}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-slate-700">
+            <button className="flex-1 bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg transition-colors">
+              Launch {selectedService.title}
+            </button>
+            <button className="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 px-6 rounded-lg transition-colors border border-slate-600">
+              Read Documentation
+            </button>
+          </div>
+        </div>
+      </Modal>
+    );
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-cyan-500/30">
+      
+      {/* --- NAVBAR --- */}
+      <nav className="fixed w-full z-40 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
+            <div className="flex items-center gap-3 cursor-pointer" onClick={() => setActiveTab('home')}>
+              <div className="w-10 h-10 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                <span className="text-white font-bold text-xl">M</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-white font-bold text-lg tracking-tight">MYXEN</span>
+                <span className="text-xs text-cyan-500 uppercase tracking-widest">Foundation V2</span>
+              </div>
+            </div>
+
+            <div className="hidden md:flex items-center space-x-8">
+              {['Home', 'Services', 'Tokenomics', 'Roadmap'].map((item) => (
+                <button 
+                  key={item}
+                  onClick={() => setActiveTab(item.toLowerCase())}
+                  className={`text-sm font-medium transition-colors ${
+                    activeTab === item.toLowerCase() ? 'text-cyan-400' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+
+            <div className="hidden md:flex">
+              <button 
+                onClick={() => setWalletConnected(!walletConnected)}
+                className={`px-5 py-2.5 rounded-lg font-medium text-sm transition-all ${
+                  walletConnected 
+                    ? 'bg-slate-800 text-cyan-400 border border-cyan-500/30' 
+                    : 'bg-cyan-500 text-white hover:bg-cyan-600 shadow-lg shadow-cyan-500/20'
+                }`}
+              >
+                {walletConnected ? '0x84...92A1' : 'Connect Wallet'}
+              </button>
+            </div>
+
+            <div className="md:hidden">
+              <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 text-slate-400 hover:text-white">
+                {isMenuOpen ? <X /> : <Menu />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden bg-slate-900 border-b border-slate-800">
+            <div className="px-4 pt-2 pb-6 space-y-1">
+              {['Home', 'Services', 'Tokenomics', 'Roadmap'].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => {
+                    setActiveTab(item.toLowerCase());
+                    setIsMenuOpen(false);
+                  }}
+                  className="block w-full text-left px-3 py-3 text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800 rounded-md"
+                >
+                  {item}
+                </button>
+              ))}
+              <button 
+                onClick={() => setWalletConnected(!walletConnected)}
+                className="w-full mt-4 bg-cyan-500 text-white px-3 py-3 rounded-md font-bold"
+              >
+                {walletConnected ? 'Disconnect Wallet' : 'Connect Wallet'}
+              </button>
+            </div>
+          </div>
+        )}
+      </nav>
+
+      {/* --- CONTENT AREA --- */}
+      <main className="pt-20">
+        
+        {/* VIEW: HOME */}
+        {activeTab === 'home' && (
+          <div className="animate-in fade-in duration-500">
+            {/* Hero */}
+            <section className="relative pt-20 pb-32 overflow-hidden">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-cyan-500/20 rounded-full blur-[120px] -z-10" />
+              <div className="max-w-7xl mx-auto px-4 text-center">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/50 border border-slate-700 text-cyan-400 text-xs font-bold mb-6">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                  </span>
+                  LIVE ON SOLANA MAINNET
+                </div>
+                <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight mb-6">
+                  One App. <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">22 Services.</span><br />
+                  Infinite Possibilities.
+                </h1>
+                <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+                  The world's first KYC-secured crypto super-app. From paying tuition to launching tokens, 
+                  MyXen makes blockchain work for your everyday life.
+                </p>
+                <div className="flex flex-col sm:flex-row justify-center gap-4">
+                  <button className="px-8 py-4 bg-cyan-500 hover:bg-cyan-600 text-white rounded-xl font-bold text-lg shadow-lg shadow-cyan-500/25 transition-all hover:scale-105">
+                    Download App
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('services')}
+                    className="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold text-lg border border-slate-700 transition-all"
+                  >
+                    Explore Ecosystem
+                  </button>
+                </div>
+
+                {/* Live Stats */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-20">
+                  <StatsCounter label="Services Live" value="22" color="text-cyan-400" />
+                  <StatsCounter label="Total Burned" value={burnCount.toLocaleString()} subtext="$MYXN" color="text-orange-500" />
+                  <StatsCounter label="Treasury" value="$52.4M" color="text-green-400" />
+                  <StatsCounter label="Users" value="125K+" />
+                </div>
+              </div>
+            </section>
+
+            {/* Feature Highlights */}
+            <section className="py-20 bg-slate-900/50 border-y border-slate-800">
+              <div className="max-w-7xl mx-auto px-4">
+                <div className="text-center mb-16">
+                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Redefining Utility</h2>
+                  <p className="text-slate-400 max-w-2xl mx-auto">
+                    Real-world solutions powered by $MYXN. No hype, just utility.
+                  </p>
+                </div>
+                
+                <div className="grid md:grid-cols-3 gap-8">
+                  <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700 hover:border-cyan-500/30 transition-colors">
+                    <GraduationCap className="w-12 h-12 text-blue-400 mb-6" />
+                    <h3 className="text-2xl font-bold text-white mb-3">0% Student Fees</h3>
+                    <p className="text-slate-400">
+                      We believe education is a right. Students pay 0% fees on tuition payments globally via the University Platform.
+                    </p>
+                  </div>
+                  <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700 hover:border-cyan-500/30 transition-colors">
+                    <Heart className="w-12 h-12 text-red-400 mb-6" />
+                    <h3 className="text-2xl font-bold text-white mb-3">Built-in Charity</h3>
+                    <p className="text-slate-400">
+                      30% of all platform fees are automatically routed to MyXen Life charity wallet. Verified on-chain.
+                    </p>
+                  </div>
+                  <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700 hover:border-cyan-500/30 transition-colors">
+                    <Flame className="w-12 h-12 text-orange-400 mb-6" />
+                    <h3 className="text-2xl font-bold text-white mb-3">Monthly Burns</h3>
+                    <p className="text-slate-400">
+                      Deflationary by design. 10% of fees are collected and burned every month to reduce supply.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        )}
+
+        {/* VIEW: SERVICES */}
+        {(activeTab === 'services' || activeTab === 'home') && (
+          <section id="services" className={`py-20 ${activeTab === 'home' ? '' : 'animate-in fade-in slide-in-from-bottom-4 duration-500'}`}>
+            <div className="max-w-7xl mx-auto px-4">
+              <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                    The $MYXN Ecosystem
+                  </h2>
+                  <p className="text-slate-400 max-w-xl">
+                    22 interconnected services powered by a single token. 
+                    Click any service to explore details.
+                  </p>
+                </div>
+                <div className="relative">
+                  <Search className="absolute left-3 top-3 w-5 h-5 text-slate-500" />
+                  <input 
+                    type="text" 
+                    placeholder="Search services..." 
+                    className="pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-cyan-500 w-full md:w-64"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {servicesData.map(service => (
+                  <ServiceCard 
+                    key={service.id} 
+                    service={service} 
+                    onClick={setSelectedService} 
+                  />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* VIEW: TOKENOMICS */}
+        {activeTab === 'tokenomics' && (
+          <section className="py-20 animate-in fade-in duration-500">
+             <div className="max-w-7xl mx-auto px-4">
+                <div className="text-center mb-16">
+                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">$MYXN Tokenomics</h2>
+                  <p className="text-slate-400">Transparent. Deflationary. Utility-First.</p>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
+                  <div className="bg-slate-800/50 p-8 rounded-2xl border border-slate-700">
+                    <h3 className="text-2xl font-bold text-white mb-6">Fee Distribution (0.075%)</h3>
+                    <div className="space-y-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-3 h-3 rounded-full bg-blue-500" />
+                          <span className="text-slate-300">Treasury (Dev & Ops)</span>
+                        </div>
+                        <span className="font-bold text-white">40%</span>
+                      </div>
+                      <div className="w-full bg-slate-700 rounded-full h-2">
+                        <div className="bg-blue-500 h-2 rounded-full" style={{ width: '40%' }}></div>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-3 h-3 rounded-full bg-red-500" />
+                          <span className="text-slate-300">Charity (MyXen Life)</span>
+                        </div>
+                        <span className="font-bold text-white">30%</span>
+                      </div>
+                      <div className="w-full bg-slate-700 rounded-full h-2">
+                        <div className="bg-red-500 h-2 rounded-full" style={{ width: '30%' }}></div>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-3 h-3 rounded-full bg-cyan-500" />
+                          <span className="text-slate-300">Liquidity Pool</span>
+                        </div>
+                        <span className="font-bold text-white">20%</span>
+                      </div>
+                      <div className="w-full bg-slate-700 rounded-full h-2">
+                        <div className="bg-cyan-500 h-2 rounded-full" style={{ width: '20%' }}></div>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-3 h-3 rounded-full bg-orange-500" />
+                          <span className="text-slate-300">Burn (Deflation)</span>
+                        </div>
+                        <span className="font-bold text-white">10%</span>
+                      </div>
+                      <div className="w-full bg-slate-700 rounded-full h-2">
+                        <div className="bg-orange-500 h-2 rounded-full" style={{ width: '10%' }}></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-6">
+                    <h3 className="text-2xl font-bold text-white mb-4">Official Addresses</h3>
+                    <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 space-y-6">
+                      <CopyAddress label="Token Mint Address" address="CHXoAEvTi3FAEZMkWDJJmUSRXxYAoeco4bDMDZQJVWen" />
+                      <CopyAddress label="Treasury Wallet" address="6S4eDdYXABgtmuk3waLM63U2KHgExcD9mco7MuyG9f5G" />
+                      <CopyAddress label="Burn Wallet" address="13m6FRnMKjcyuX53ryBW7AJkXG4Dt9SR5y1qPjBxSQhc" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Supply Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="p-6 bg-slate-900 border border-slate-800 rounded-xl text-center">
+                    <span className="text-slate-500 text-sm uppercase">Total Supply</span>
+                    <h4 className="text-3xl font-bold text-white mt-2">1,000,000,000</h4>
+                  </div>
+                  <div className="p-6 bg-slate-900 border border-slate-800 rounded-xl text-center">
+                     <span className="text-slate-500 text-sm uppercase">Pre-Sale</span>
+                    <h4 className="text-3xl font-bold text-cyan-400 mt-2">500,000,000</h4>
+                  </div>
+                  <div className="p-6 bg-slate-900 border border-slate-800 rounded-xl text-center">
+                     <span className="text-slate-500 text-sm uppercase">Monthly Burn</span>
+                    <h4 className="text-3xl font-bold text-orange-500 mt-2">Active 🔥</h4>
+                  </div>
+                </div>
+             </div>
+          </section>
+        )}
+
+        {/* VIEW: ROADMAP */}
+        {activeTab === 'roadmap' && (
+           <section className="py-20 animate-in fade-in duration-500">
+             <div className="max-w-4xl mx-auto px-4">
+                <div className="text-center mb-16">
+                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Roadmap to 2026</h2>
+                  <p className="text-slate-400">Our journey to building the ultimate super-app.</p>
+                </div>
+
+                <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-cyan-500 before:to-transparent">
+                  {[
+                    { q: 'Q4 2025', title: 'Foundation Launch', status: 'current', items: ['Presale Launch (500M)', 'Core Services Live', 'First Monthly Burn'] },
+                    { q: 'Q1 2026', title: 'Ecosystem Expansion', status: 'upcoming', items: ['Freelancer Marketplace', 'University Platform', 'DAO Beta'] },
+                    { q: 'Q2 2026', title: 'Community Growth', status: 'upcoming', items: ['Meme Engine Launch', 'Women Empowerment Program', 'Dev Portal v1'] },
+                    { q: 'Q3 2026', title: 'Global Scale', status: 'upcoming', items: ['Global Merchant Expansion', 'Mobile App v2 (AI)', 'Cross-chain Bridge'] },
+                  ].map((phase, idx) => (
+                    <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                      <div className="flex items-center justify-center w-10 h-10 rounded-full border border-slate-700 bg-slate-900 group-hover:bg-cyan-500 group-hover:border-cyan-400 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">
+                        {phase.status === 'current' ? <div className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse"/> : <div className="w-3 h-3 bg-slate-600 rounded-full"/>}
+                      </div>
+                      
+                      <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-6 bg-slate-800/50 border border-slate-700 rounded-xl hover:border-cyan-500/30 transition-colors">
+                        <div className="flex justify-between items-center mb-2">
+                           <h3 className="font-bold text-white text-lg">{phase.title}</h3>
+                           <span className="text-xs font-mono text-cyan-500 px-2 py-1 bg-cyan-500/10 rounded">{phase.q}</span>
+                        </div>
+                        <ul className="space-y-2">
+                          {phase.items.map((item, i) => (
+                            <li key={i} className="text-slate-400 text-sm flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 bg-slate-600 rounded-full"></span>
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+             </div>
+           </section>
+        )}
+      </main>
+
+      {/* --- FOOTER --- */}
+      <footer className="bg-slate-900 border-t border-slate-800 pt-16 pb-8">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid md:grid-cols-4 gap-8 mb-12">
+            <div className="col-span-1 md:col-span-2">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 bg-cyan-600 rounded flex items-center justify-center font-bold text-white">M</div>
+                <span className="text-xl font-bold text-white">MyXen Foundation</span>
+              </div>
+              <p className="text-slate-400 max-w-sm">
+                The world's first KYC-secured crypto super-app. 
+                Making blockchain useful for humanity since 2025.
+              </p>
+            </div>
+            <div>
+              <h4 className="text-white font-bold mb-4">Ecosystem</h4>
+              <ul className="space-y-2 text-slate-400 text-sm">
+                <li className="hover:text-cyan-400 cursor-pointer">MyXenPay</li>
+                <li className="hover:text-cyan-400 cursor-pointer">University Platform</li>
+                <li className="hover:text-cyan-400 cursor-pointer">Freelancer Market</li>
+                <li className="hover:text-cyan-400 cursor-pointer">MyXen Life Charity</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-bold mb-4">Resources</h4>
+              <ul className="space-y-2 text-slate-400 text-sm">
+                <li className="hover:text-cyan-400 cursor-pointer">Whitepaper</li>
+                <li className="hover:text-cyan-400 cursor-pointer">Developer Portal</li>
+                <li className="hover:text-cyan-400 cursor-pointer">Brand Assets</li>
+                <li className="hover:text-cyan-400 cursor-pointer">Contact Support</li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-slate-500 text-sm">© 2025 MyXen Foundation V2. All rights reserved.</p>
+            <div className="flex gap-6 text-slate-400">
+               <span className="hover:text-white cursor-pointer">Twitter</span>
+               <span className="hover:text-white cursor-pointer">Discord</span>
+               <span className="hover:text-white cursor-pointer">Telegram</span>
+               <span className="hover:text-white cursor-pointer">GitHub</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      {/* Modals */}
+      {renderServiceModal()}
+      
+    </div>
+  );
+}

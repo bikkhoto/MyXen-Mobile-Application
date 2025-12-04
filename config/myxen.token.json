@@ -1,0 +1,39 @@
+{
+  "myxn": {
+    "mint_address": "6S4eDdYXABgtmuk3waLM63U2KHgExcD9mco7MuyG9f5G",
+    "decimals": 9,
+    "symbol": "MYXN",
+    "use_network": "devnet",
+    "rpc": {
+      "devnet": "https://api.devnet.solana.com",
+      "mainnet": "https://api.mainnet-beta.solana.com",
+      "recommended_read_relay": "https://solana-api.projectserum.com"
+    },
+    "notes": "Using MYXN token on devnet for testing. Will migrate to mainnet after audits."
+  },
+  "wallets": {
+    "treasury": "Azvjj21uXQzHbM9VHhyDfdbj14HD8Tef7ZuC1p7sEMk9",
+    "mint_wallet": "6S4eDdYXABgtmuk3waLM63U2KHgExcD9mco7MuyG9f5G",
+    "burn_wallet": "HuyT8sNPJMnh9vgJ43PXU4TY696WTWSdh1LBX53ZVox9",
+    "charity": "DDoiUCeoUNHHCV5sLT3rgFjLpLUM76tLCUMnAg52o8vK",
+    "hr_wallet": "Hv8QBqqSfD4nC6N8qZBo7iJE9QiHLnoXJ6sV2hk1XpoR",
+    "marketing": "4egNUZa2vNBwmc633GAjworDPEJD2F1HK6pSvMnC3WSv"
+  },
+  "feature_flags": {
+    "support_system": false,
+    "native_keystore": true,
+    "ads_system": false,
+    "university_integration": false,
+    "emergency_enhanced": true
+  },
+  "testing": {
+    "platforms": ["android", "ios"],
+    "require_physical_for_crypto_tests": true,
+    "recommended_device_examples": {
+      "android": "Pixel 6 / Samsung S10 with StrongBox",
+      "ios": "iPhone 8+ or newer (Secure Enclave)"
+    }
+  },
+  "version": "1.0.0",
+  "last_updated": "2025-12-04"
+}

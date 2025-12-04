@@ -1,0 +1,271 @@
+Good. This is important — and I’ll treat it like a security feature, not a novelty. I’m going to be blunt and decisive: we’ll design a **privacy-first, reliable, auditable emergency pipeline** that protects users, respects minimal permissions, and avoids adding new attack surface.
+
+Below is the full, production-ready spec you can hand to designers & engineers. It covers detection of country (so we auto-select local emergency number), discreet/hidden triggers (fake button + hardware combos), how calls should be handled (safe default: open dialer), opt-in auto-call flow (explicit permission, legal implications), sending encrypted SOS data to trusted contacts, fallback behaviors, privacy & safety controls, and concrete implementation notes for Android & iOS.
+
+---
+
+# R&D Boss Spec — Emergency “Hidden / Fake Button” + Auto-call + SOS pipeline
+
+## Goals (must-haves)
+
+1. Provide a **discrete, reliable** emergency trigger for users in imminent danger.
+2. Automatically **detect the user’s country** to pre-select the correct emergency number (e.g., 911).
+3. **Minimize permissions** and privacy risk — no continuous GPS, no contact dumps.
+4. **Safe default behavior**: open the native dialer with emergency number prefilled (no CALL_PHONE permission).
+5. Offer an **opt-in** stronger mode (auto-call) requiring explicit user consent and platform permission.
+6. Provide **secure SOS messaging** to user-designated trusted contacts (encrypted, ephemeral).
+7. Prevent false/accidental activations and abuse (debounce, confirmation variants, quick cancel).
+
+---
+
+## Permission & privacy decisions (boss call)
+
+* **Do not** request continuous location permission. That violates our minimal-permissions policy.
+* For country detection, use **non-invasive** sources in priority order (no extra permission needed):
+
+  1. **SIM / Telephony country code (preferred)** — read via platform API (no runtime permission required for reading network country on many devices; treat carefully on iOS).
+  2. **Device locale / region** — from OS settings.
+  3. **Phone number country code** (if user provided phone during onboarding).
+  4. **IP geolocation** (fallback server-side only; coarse and optional).
+* **If user opts in** to include a precise current location with SOS messages, request a single, ephemeral **foreground location** permission when the emergency is triggered (explain clearly). Do **not** request continuous background location.
+* **Do not** request SMS, Contacts, Microphone, or Camera for the emergency pipeline by default.
+* **Dialing behavior**: default is `ACTION_DIAL` / `openURL("tel:...")` — no CALL_PHONE permission required. Auto-call requires **explicit opt-in** and the **CALL_PHONE** permission (Android) / appropriate iOS entitlement; we recommend avoiding auto-call as default for privacy/legal reasons.
+
+---
+
+## Emergency number mapping (offline-first)
+
+* Ship an **embedded, compact emergency number DB**: country-code → emergency number(s) (e.g., US → 911, UK → 999, etc.). Keep it offline in the app (tiny JSON) to work without network.
+* Allow **server-updatable** overrides via secure signed update (optional) — but only if user allows remote config. Default offline DB is authoritative.
+* Allow **user override**: user can manually set their emergency number (important for expatriates / private security services).
+
+---
+
+## How we detect the user’s country (priority & fallback)
+
+1. **SIM-based detection**
+
+   * Android: TelephonyManager.getNetworkCountryIso() or getSimCountryIso(). No special runtime permission for SIM country in general — but handle absence gracefully.
+   * iOS: CTCarrier.isoCountryCode via CoreTelephony (no permission required but may be unavailable)
+2. **Device locale**: Locale.getDefault() / NSLocale.current.
+3. **Phone number country code**: during onboarding, if user enters phone, use its dial code.
+4. **IP geolocation** (server-side): coarse fallback if none of the above available — used only to select default emergency number; do not store location on server.
+
+Always show detected country to user in the emergency settings for confirmation and allow manual override.
+
+---
+
+## Triggers — how the user invokes the emergency pipeline (discreet & reliable)
+
+We must support multiple discreet triggers so the user has options depending on context and device:
+
+### Primary (stealth) triggers
+
+1. **Hidden Fake Button (UI)**
+
+   * Small invisible (or camouflaged) button placed in a configurable location (Settings lets user choose) or inside a gesture area (e.g., bottom-right).
+   * Activation: **long-press (3s)** or **rapid multi-tap (5 taps within 2s)** — user-configurable.
+   * On activation: start emergency flow silently (vibrate once) and show a **very brief** locked overlay to indicate activation (or not, depending on user setting).
+
+2. **Hardware button combo**
+
+   * Support pressing **Volume Up + Volume Down** 3× quickly or pressing power button 3× (Android, iOS both support quick actions but exact behavior differs).
+   * Use OS recommended best practices (e.g., iOS has built-in SOS with power-button — ensure app doesn’t conflict).
+   * Advantage: Works even when screen off (if allowed by platform policies).
+
+3. **Shake gesture** (optional)
+
+   * Not primary — unreliable in crowded places, avoid as sole trigger.
+
+### Secondary triggers (explicit)
+
+* A visible red SOS button on the home Security screen for users who prefer explicit access.
+
+---
+
+## Activation workflow (what happens after trigger)
+
+We’ll provide two modes: **Safer default** and **Aggressive (Opt-in auto-call + SOS messages)**.
+
+### A) Safer Default (RECOMMENDED DEFAULT)
+
+1. User activates trigger. App shows a **short ephemeral overlay** (1.5s) with vibration to indicate activation.
+2. App opens the native dialer prefilled with the local emergency number for detected country (tel: emergencyNumber). This is `ACTION_DIAL` / `openURL("tel:...")`. No CALL_PHONE permission required.
+3. Additionally (if user configured trusted contacts and consented to SOS), send an **encrypted push** or in-app message to those contacts with:
+
+   * Time stamp
+   * Coarse inferred location source (country only; no coordinates by default)
+   * Short alert text
+     This message must be **ephemeral** and **encrypted client-side**. Server acts only as message relay, does not store plaintext.
+
+### B) Aggressive / Auto-Call Mode (OPT-IN ONLY)
+
+**Only** with explicit, clear consent and platform permissions:
+
+1. User enables “Auto-call on emergency” in Settings and accepts a strong consent screen explaining implications.
+2. App requests CALL_PHONE permission (Android) — user sees OS dialog. On iOS, behavior depends on API (iOS generally prohibits silent background calls; auto-call may require special handling).
+3. Triggering causes the app to attempt to place the call immediately (auto-call). If it fails or permission is revoked, fallback to opening dialer.
+4. Simultaneously, app will request **one-time foreground location** (if user opted in to send location) and send encrypted SOS to trusted contacts (see below).
+5. For safety, allow a short cancellation window (2–3s) via a single visible Cancel affordance to avoid accidental calls. Also log activation locally (encrypted).
+
+**My recommendation:** Do **not** enable auto-call by default. Use Safer Default and offer Auto-Call only for power users who explicitly accept liability.
+
+---
+
+## Trusted contacts & SOS messages (secure, ephemeral)
+
+* **Trusted contacts**: user can set up to N (e.g., 3) phone numbers or app contacts. These are stored encrypted in secure storage — not uploaded plaintext.
+* **SOS message payload** (encrypted client-side):
+
+  * user_id (anonymous token), timestamp, country (or coordinates if allowed), short text (user-configured), current app state (e.g., ‘In transaction’).
+* **Delivery options**:
+
+  * **Push via backend relay** (recommended, encrypted): app encrypts payload with each contact’s public key (if contact has app and key), or encrypts with server+recipient handshake. Server only relays encrypted blob and does not retain plaintext.
+  * **Fallback**: open dialer prefilled to contact if user wants to contact trusted person directly. Do not auto-SMS (requires SMS permission).
+* **If user opted into sending precise coordinates**: request **one-time** foreground location permission at time of activation, get coordinates, then immediately discard after sending encrypted blob. Do not persist coordinates locally or on server.
+
+---
+
+## UX microcopy & onboarding for emergency feature
+
+* Setup screen title: “Emergency Quick-Dial & SOS”
+* Short description: “A discreet one-touch way to contact local emergency services and your trusted contacts. Works even when you can’t look at the screen.”
+* Default behavior explanation (checkbox):
+
+  * “Open phone dialer to call local emergency number (recommended).”
+  * Optional toggle: “Allow one-tap auto-call (requires extra permission).” (Link to more info + legal note)
+  * Optional toggle: “Allow sending encrypted SOS (share coarse location/country).”
+* Safety consent for auto-call: explicit checkbox + re-auth (biometric) before enabling.
+* Activation overlay microcopy (brief): “Emergency triggered — opening dialer.” (optional visible text; user can disable to be silent)
+* Cancel affordance microcopy: “Cancel emergency (tap within 3s)”
+
+---
+
+## False positives & abuse prevention
+
+* **Debounce**: require confirmed activation patterns: long-press or multi-tap rather than accidental swipe.
+* **Cooldown / rate limit**: limit activations to reasonable frequency (e.g., 3 per 10 minutes). Log attempts locally (encrypted) and optionally send an audit event to backend (metadata only) if user consented.
+* **Require re-auth to disable** the emergency feature in settings (biometric/PIN) to prevent adversary disabling it.
+* **Local logs**: encrypted, signed local log of activations (timestamp + mode + country) to aid forensic analysis if user opts to share.
+
+---
+
+## Security & privacy checklist (must pass)
+
+* [ ] Emergency DB bundled offline; no network needed to resolve emergency number.
+* [ ] Country detection uses local sources by default; IP geolocation only as fallback and non-persistent.
+* [ ] Trusted contacts stored encrypted with hardware-keystore when available.
+* [ ] SOS messages encrypted client-side; server only relays encrypted blobs.
+* [ ] No background location collection; one-time foreground location only with explicit consent per emergency.
+* [ ] Auto-call is opt-in and uses CALL_PHONE only after explicit consent and re-auth.
+* [ ] Audit logs stored encrypted; user controls export/delete.
+* [ ] Unit tests & integration tests for trigger detection, debounce, encryption, and fallbacks.
+* [ ] Threat model review and external security audit of the emergency feature before release.
+
+---
+
+## Platform specifics & implementation notes
+
+### Android
+
+* **Open Dialer**: `Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + emergencyNumber)); startActivity(intent);` — NO permission required.
+* **Auto Call**: `CALL_PHONE` permission required. Request at runtime with clear rationale dialog. If granted, use `ACTION_CALL` — but this auto-dials without user interaction; be careful.
+* **SIM country**: `TelephonyManager.getSimCountryIso()` / `getNetworkCountryIso()`. Handle nulls.
+* **Hardware button detection**: capture `KeyEvent` for volume buttons; consider accessibility and OS-level conflicts. Use background service judiciously; ensure not to impact battery.
+* **Foreground location**: use `ACCESS_FINE_LOCATION` but **request only during emergency**; do not register for background location.
+
+### iOS
+
+* **Open Dialer**: `UIApplication.shared.open(URL(string: "tel://\(emergencyNumber)")!)` — iOS may show prompt; auto-call behavior is limited by OS.
+* **SIM country**: `CTCarrier.isoCountryCode` (CoreTelephony). Fallback to `NSLocale.current.regionCode`.
+* **Hardware button**: iOS may have built-in SOS via power button; prefer not to override system SOS. Use app-level double-tap gestures or invisible UI buttons; ensure no conflict.
+* **Foreground location**: request `whenInUse` authorization only during emergency.
+
+---
+
+## Edge cases & special considerations
+
+* **Users traveling internationally**: provide quick override and a preview (country and number) in emergency setup. Expat users should be able to enter a custom emergency number or local embassy contact.
+* **No network / airplane mode**: dialer works via PSTN; for SOS messaging, if no network, queue encrypted message and send when network resumes. But default dialing should still work (PSTN).
+* **Prank or false activations**: include a quick cancel affordance and a short vibration pattern to reassure user of stealth activation.
+* **Legal/Regulatory**: in some countries auto-calling emergency services programmatically may be restricted — include explicit legal disclaimer in the opt-in and consult local laws for target markets.
+
+---
+
+## Testing & QA plan (emergency feature)
+
+* Unit tests:
+
+  * Country detection logic for all permutations: SIM present/absent, locale, phone number, IP fallback.
+  * Emergency DB lookup tests (edge cases).
+  * Encryption/decryption of trusted contacts & SOS payloads.
+* Integration tests:
+
+  * Trigger activation tests: multi-tap, long-press, hardware combo (simulate).
+  * Dialer open behavior on Android/iOS emulators.
+  * Auto-call permission flow tests (Android) — simulate permission granted/denied.
+  * One-time location-permission request flow during activation (simulate accept/deny).
+* Security tests:
+
+  * Attempt to read trusted contacts without unlock.
+  * Verify server cannot decrypt SOS payloads.
+* UX tests:
+
+  * False positive simulation: accidental multi-tap; cancel flow.
+  * Readability of microcopy and onboarding consent.
+
+---
+
+## Developer deliverables (what to build)
+
+1. **Emergency module** (Flutter feature module): UI for settings, trigger configuration, trusted contacts management.
+2. **Embedded emergency DB**: compact JSON in assets, country code → emergency number.
+3. **Trigger service**: listens for configured gestures & hardware combos (app context-aware).
+4. **Activation handler**: flow that implements Safer Default and Aggressive opt-in.
+5. **SOS manager**: encryption, message creation, delivery via secure relay.
+6. **Tests & Audit report**: unit/integration + security review.
+
+---
+
+## Copilot/Gemini prompt to implement the feature (paste-ready)
+
+```
+You are a senior Flutter engineer implementing a privacy-first Emergency Quick-Dial & SOS feature for MyXenPay.
+
+Deliver:
+1) A Flutter module that includes:
+  - EmergencySettingsPage (configures hidden trigger, trusted contacts, auto-call opt-in, SOS opt-in, manual emergency number override).
+  - EmergencyTriggerService (handles long-press, multi-tap, and hardware button combos; debounce and cooldown).
+  - EmergencyHandler (activation flow: open dialer, optional auto-call with CALL_PHONE permission, and send encrypted SOS via backend relay).
+  - Embedded emergency_numbers.json asset (country_code -> emergency_number) and loader logic.
+  - One-time foreground-location request flow used only on explicit consent during activation.
+
+2) Requirements:
+  - Default behavior: open native dialer prefilled with emergency number (ACTION_DIAL / openURL tel:), no CALL_PHONE permission.
+  - Auto-call is opt-in and requires explicit re-auth (biometric) + runtime CALL_PHONE permission (Android). Provide fallback to opening dialer if permission denied.
+  - SOS messages must be encrypted client-side and the backend must only relay encrypted blobs.
+  - Provide unit tests for country detection and encryption, and integration tests for trigger activation.
+  - Use flutter_secure_storage for secrets. Use local_auth for re-auth. Use platform channels only when necessary.
+  - No background continuous location; ask for location only upon activation and only if user opted in.
+  - Provide clear UI microcopy for consent and cancellation.
+
+Output:
+- Provide file list for module with brief content for each file and example code snippets for opening dialer, requesting CALL_PHONE permission, and encrypting an SOS payload.
+- Provide tests skeletons.
+```
+
+---
+
+## Final recommendations (boss-level)
+
+1. **Default to Safer Behavior**: open dialer. This maximizes safety, minimizes permissions and legal complexity, and keeps user trust.
+2. **Make Auto-Call strictly opt-in** with re-auth and clear consent. Don’t ship auto-call on by default.
+3. **Use offline emergency number DB + SIM/locale detection**; show detected country and allow manual override.
+4. **Encrypt SOS payloads client-side**; avoid sending plaintext to servers.
+5. **Test extensively** on low-end Android and older iPhones to ensure triggers work reliably and don’t conflict with OS-level SOS features.
+6. **Get legal & compliance review** for markets where auto-calling emergency services programmatically may be regulated.
+
+---
+
+You good with this plan? If yes, I’ll produce **(A)** the full Flutter module file list + Copilot comments for the Emergency feature so your devs can paste directly into Copilot — or **(B)** a short UX flow & onboarding copy for designers and content writers. Pick **A** or **B** and I’ll generate it instantly.
+

@@ -1,0 +1,125 @@
+
+# 1 — Decisions I made (best-practice, ready to use)
+
+* **MYXN token in this phase:** Use the existing token you gave for now: `6S4eDdYXABgtmuk3waLM63U2KHgExcD9mco7MuyG9f5G`. We’ll switch to the final new token later with a migration plan.
+* **Network for testing:** `devnet` for initial integration and QA. Use `mainnet-beta` only after audits & sign-off.
+* **Token decimals:** `9` (standard for SPL).
+* **Scope decisions:**
+
+  * Support System: **Later (v1.1)** — not required for v1.0 shipping. Build as separate backend.
+  * Native hardware keystore: **Yes — implement now** (high priority). Don’t rely on stub for long; native integration reduces risk and improves security.
+  * Ads system: **Later** (optional — implement after product/UX completes).
+  * University integration: **Later** (separate product subdomain; keep deep-links ready but implement post-launch).
+* **Testing platform:** **Both Android & iOS.** Use emulators for fast CI/dev; require at least one physical device per OS for hardware-backed tests (Android StrongBox device and iOS device with Secure Enclave).
+
+# 2 — Wallet & token configuration (use this block for Gemini / CI / engineers)
+
+Save this as a config JSON (e.g., `config/myxen.token.json`) or in your env manager.
+
+```json
+{
+  "myxn": {
+    "mint_address": "6S4eDdYXABgtmuk3waLM63U2KHgExcD9mco7MuyG9f5G",
+    "decimals": 9,
+    "use_network": "devnet",
+    "rpc": {
+      "devnet": "https://api.devnet.solana.com",
+      "mainnet": "https://api.mainnet-beta.solana.com",
+      "recommended_read_relay": "https://solana-api.projectserum.com"
+    },
+    "notes": "Using legacy MYXN token until new token deployment. Will perform token migration after new mint is live."
+  },
+  "wallets": {
+    "treasury": "Azvjj21uXQzHbM9VHhyDfdbj14HD8Tef7ZuC1p7sEMk9",
+    "mint_wallet": "6S4eDdYXABgtmuk3waLM63U2KHgExcD9mco7MuyG9f5G",
+    "burn_wallet": "HuyT8sNPJMnh9vgJ43PXU4TY696WTWSdh1LBX53ZVox9",
+    "charity": "DDoiUCeoUNHHCV5sLT3rgFjLpLUM76tLCUMnAg52o8vK",
+    "hr_wallet": "Hv8QBqqSfD4nC6N8qZBo7iJE9QiHLnoXJ6sV2hk1XpoR",
+    "marketing": "4egNUZa2vNBwmc633GAjworDPEJD2F1HK6pSvMnC3WSv"
+  },
+  "feature_flags": {
+    "support_system": false,
+    "native_keystore": true,
+    "ads_system": false,
+    "university_integration": false
+  },
+  "testing": {
+    "platforms": ["android", "ios"],
+    "require_physical_for_crypto_tests": true,
+    "recommended_device_examples": {
+      "android": "Pixel 6 / Samsung S10 with StrongBox",
+      "ios": "iPhone 8+ or newer (Secure Enclave)"
+    }
+  }
+}
+```
+
+# 3 — Exact env vars to add to CI / mobile builds
+
+Add these to your secrets manager / `.env` for devnet builds:
+
+```
+MYXN_MINT=6S4eDdYXABgtmuk3waLM63U2KHgExcD9mco7MuyG9f5G
+MYXN_DECIMALS=9
+SOLANA_CLUSTER=devnet
+SOLANA_RPC=https://api.devnet.solana.com
+TREASURY_WALLET=Azvjj21uXQzHbM9VHhyDfdbj14HD8Tef7ZuC1p7sEMk9
+FEATURE_SUPPORT=false
+FEATURE_NATIVE_KEYSTORE=true
+```
+
+# 4 — Immediate next steps (engineer checklist — do these now)
+
+1. **Commit the config JSON** to `config/myxen.token.json` and wire the build to read those envs for devnet builds.
+2. **Implement native keystore** (priority):
+
+   * Android: StrongBox/AndroidKeyStore path.
+   * iOS: Secure Enclave path.
+   * Expose method channel `com.myxen.crypto/hardware_keystore` (we already prepared spec).
+   * Run hardware tests on a physical device.
+3. **Set mobile to use devnet** and ensure send/receive flow checks `$MYXN` mint address for allowed transfers (block other tokens as send).
+4. **Add wallet list constants** to admin config (read-only in app where needed for treasury/charity addresses). Do **not** embed private keys in repo.
+5. **Create migration stub**: a small script `tools/migrate_token.sh` that can switch the mint address and map balances later — prepare DB/schema to support `active_mint` vs `legacy_mint`.
+6. **Schedule support system work for v1.1** — create a Jira/ticket epic and backlog using the support step-pack I provided.
+
+# 5 — How to switch to the new $MYXN token later (migration plan summary)
+
+1. Deploy new mint on mainnet and get new mint address.
+2. Add new mint to `config/myxen.token.json` (field `future_mint`) and set `migration_window_start` date.
+3. Announce migration to users + create on-chain swap mechanism (or mint distribution plan).
+4. Run a controlled migration: mint bridging program or use snapshot + airdrop to treasury-managed wallets.
+5. Update mobile builds to read `active_mint` from server feature-flag and push update.
+6. After finalization, retire old mint in code and update docs.
+
+# 6 — Policy & security reminders (do not skip)
+
+* **Never store private keys or mnemonics in repo or CI logs.** Use secrets manager.
+* **Only use provided public addresses** in config. Never commit seed phrases.
+* **Audit the native keystore code** — plan to run the security audit (Step 11) after native integration is implemented.
+* **Fees model:** Ensure UI always shows fee in `$MYXN` (and fiat equivalent) before confirming transactions.
+
+# 7 — Quick answers to Gemini’s prompts (pasteable)
+
+If Gemini asks again for a minimal response you can paste this:
+
+```
+MYXN config:
+- Mint: 6S4eDdYXABgtmuk3waLM63U2KHgExcD9mco7MuyG9f5G
+- Decimals: 9
+- Network: devnet (use https://api.devnet.solana.com)
+- Treasury: Azvjj21uXQzHbM9VHhyDfdbj14HD8Tef7ZuC1p7sEMk9
+- Burn: HuyT8sNPJMnh9vgJ43PXU4TY696WTWSdh1LBX53ZVox9
+- Charity: DDoiUCeoUNHHCV5sLT3rgFjLpLUM76tLCUMnAg52o8vK
+- HR: Hv8QBqqSfD4nC6N8qZBo7iJE9QiHLnoXJ6sV2hk1XpoR
+- Marketing: 4egNUZa2vNBwmc633GAjworDPEJD2F1HK6pSvMnC3WSv
+
+Scope decisions:
+- Support System: Later (v1.1)
+- Native hardware keystore: Yes (implement now)
+- Ads system: Later
+- University integration: Later
+
+Testing:
+- Platforms: Android + iOS
+- Emulators for CI, physical devices required for hardware-backed tests
+```

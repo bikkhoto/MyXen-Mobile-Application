@@ -1,19 +1,88 @@
-name: myxenpay_mobile
-description: MyXenPay — secure mobile wallet for MyXen Foundation
-publish_to: "none"
-version: 0.1.0+1
+name: myxen
+description: A secure Solana wallet and payments app for $MYXN token
+publish_to: 'none'
+version: 1.0.0+1
 
 environment:
-  sdk: ">=2.18.0 <3.0.0"
-  flutter: ">=3.7.0"
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.13.5
+  
+  # State Management
+  flutter_riverpod: ^2.4.9
+  riverpod_annotation: ^2.3.3
+  
+  # Networking
+  dio: ^5.4.0
+  
+  # Secure Storage
+  flutter_secure_storage: ^9.0.0
+  
+  # Local Database
+  drift: ^2.14.0
+  sqlite3_flutter_libs: ^0.5.18
+  path_provider: ^2.1.1
+  path: ^1.8.3
+  
+  # Biometrics
+  local_auth: ^2.1.7
+  local_auth_android: ^1.0.35
+  local_auth_ios: ^1.1.5
+  
+  # Cryptography
+  bip39: ^1.0.6
+  ed25519_hd_key: ^2.2.0
+  ed25519_edwards: ^0.3.1
+  pointycastle: ^3.7.3
+  cryptography: ^2.5.0
+  convert: ^3.1.1
+  
+  # QR Code
+  qr_flutter: ^4.1.0
+  mobile_scanner: ^3.5.5
+  
+  # UI & Utilities
+  cupertino_icons: ^1.0.6
+  intl: ^0.18.1
+  url_launcher: ^6.2.2
+  share_plus: ^7.2.1
+  permission_handler: ^11.1.0
+  device_info_plus: ^9.1.1
+  package_info_plus: ^5.0.1
+  
+  # Utils
+  equatable: ^2.0.5
+  freezed_annotation: ^2.4.1
+  json_annotation: ^4.8.1
+  logger: ^2.0.2+1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  
+  # Code Generation
+  build_runner: ^2.4.7
+  riverpod_generator: ^2.3.9
+  freezed: ^2.4.6
+  json_serializable: ^6.7.1
+  drift_dev: ^2.14.0
+  
+  # Linting
+  flutter_lints: ^3.0.1
+  
+  # Testing
+  mockito: ^5.4.4
   integration_test:
     sdk: flutter
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/data/emergency_numbers.json
+  
+

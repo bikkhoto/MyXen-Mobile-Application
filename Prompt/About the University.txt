@@ -1,0 +1,48 @@
+🎓 INSIDE the MyXen Mobile App (Student-focused mini-version , Replace University)
+
+Only these 5 things (clean, minimal, mobile-friendly):
+
+1. Student ID Verification
+
+Verify university email
+
+Link to wallet
+
+Basic student profile sync
+
+2. Zero-Fee Payments
+
+Pay tuition
+
+Pay hostel
+
+Pay bookstore
+
+Pay cafeteria
+
+Scan campus merchant QR
+
+3. Cashback Balance View
+
+Show rewards (from blockchain)
+
+Monthly limit tracking
+
+Transaction summaries
+
+4. Scholarship Status (Read-only)
+
+Eligibility
+
+Application status
+
+Results
+
+Notifications
+(But actual application process stays on the University platform)
+
+5. Learning Portal Shortcut
+
+App only deep-links to web learning modules
+
+No heavy content inside the app
