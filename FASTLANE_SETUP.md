@@ -1,4 +1,12 @@
-**full, production-ready Fastlane setup** for the MyXenPay Mobile Application.
+<p align="center">
+  <img src="assets/logo.svg" alt="MyXenPay Logo" width="400">
+</p>
+
+<h1 align="center">MyXenPay — Production-Ready Fastlane Setup</h1>
+
+<p align="center">
+  <strong>Full, production-ready Fastlane setup for the MyXenPay Mobile Application.</strong>
+</p>
 
 This includes:
 

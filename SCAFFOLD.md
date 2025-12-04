@@ -1,7 +1,14 @@
-# MyXenPay — Mobile App Repository Scaffold (production-grade)
+<p align="center">
+  <img src="assets/logo.svg" alt="MyXenPay Logo" width="400">
+</p>
 
+<h1 align="center">MyXenPay — Mobile App Repository Scaffold (production-grade)</h1>
 
-This is designed it to be secure, auditable, and flexible for either **React Native** or **Flutter** while keeping clear places for mobile, backend connectors, 
+<p align="center">
+  <strong>A secure, auditable, and flexible repository scaffold for React Native or Flutter mobile apps.</strong>
+</p>
+
+This is designed to be secure, auditable, and flexible for either **React Native** or **Flutter** while keeping clear places for mobile, backend connectors, 
 CI, documentation, and release automation (Fastlane + GitHub Actions). This is a blueprint you can drop into a new repo and then populate files — everything you 
 need to onboard devs, auditors, and integrators.
 

@@ -1,5 +1,12 @@
-**MyXen Foundation — Mobile Application (MyXenPay)**
-Official release process for Android & iOS, designed for secure, auditable, and reproducible production rollouts.
+<p align="center">
+  <img src="assets/logo.svg" alt="MyXenPay Logo" width="400">
+</p>
+
+<h1 align="center">MyXen Foundation — Mobile Application (MyXenPay)</h1>
+
+<p align="center">
+  <strong>Official release process for Android & iOS, designed for secure, auditable, and reproducible production rollouts.</strong>
+</p>
 
 ---
 

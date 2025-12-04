@@ -1,4 +1,16 @@
-This is a flexible, secure, and auditable workflow designed to:
+<p align="center">
+  <img src="../../assets/logo.svg" alt="MyXenPay Logo" width="400">
+</p>
+
+<h1 align="center">MyXenPay — CI/CD Workflow Documentation</h1>
+
+<p align="center">
+  <strong>A flexible, secure, and auditable GitHub Actions workflow for the MyXenPay Mobile Application.</strong>
+</p>
+
+---
+
+This workflow is designed to:
 
 * run on PRs (lint/test/security)
 * produce reproducible build artifacts (AAB/APK and IPA) in CI

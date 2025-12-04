@@ -1,0 +1,19 @@
+name: myxenpay_mobile
+description: MyXenPay — secure mobile wallet for MyXen Foundation
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=2.18.0 <3.0.0"
+  flutter: ">=3.7.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^0.13.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter

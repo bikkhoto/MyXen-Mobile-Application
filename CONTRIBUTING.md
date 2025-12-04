@@ -1,5 +1,12 @@
-**MyXen Foundation — Mobile Application (MyXenPay)**
-Guidelines for Contributors
+<p align="center">
+  <img src="assets/logo.svg" alt="MyXenPay Logo" width="400">
+</p>
+
+<h1 align="center">MyXen Foundation — Mobile Application (MyXenPay)</h1>
+
+<p align="center">
+  <strong>Guidelines for Contributors</strong>
+</p>
 
 ---
 
