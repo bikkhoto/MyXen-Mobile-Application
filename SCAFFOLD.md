@@ -208,7 +208,7 @@ cd myxenpay-mobile
 * React Native (example with expo-less RN):
 
 ```bash
-npx react-native init MyXenPay --directory . --version 0.71.0
+npx react-native init MyXenPay --directory . --version 0.71.11
 ```
 
 * Flutter:
