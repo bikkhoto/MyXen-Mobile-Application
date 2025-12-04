@@ -67,11 +67,11 @@ Follow these steps to set up the development environment.
     flutter pub get
     ```
 3.  **Configure Environment Variables:**
-    Create a `.env` file in the root directory based on the provided `.env.example`.
+    Create a `.env` file in the root directory based on the provided [`.env.example`](.env.example).
     ```bash
-    # Example:
-    # BASE_API_URL=...
-    # SOLANA_RPC_URL=...
+    MYXEN_API_BASE_URL=https://api.myxenpay.finance
+    MYXEN_RPC_URL=https://rpc.myxenpay.finance
+    FEATURE_KYC_ENCRYPTION=true
     ```
 4.  **Run the application:**
     ```bash
