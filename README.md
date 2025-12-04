@@ -1,204 +1,98 @@
-# MyXen Mobile App
+<p align="center">
+  <img src="Image/Gemini_Generated_Image_8ackdl8ackdl8ack.png" alt="MyXenPay Banner" width="100%">
+</p>
 
-A secure, minimal, on-chain Solana wallet and payments app for Android (min API 26) and iOS (min iOS 12).
+# MyXenPay (Super Application) Mobile App
 
-## Overview
+[![Flutter Version](https://img.shields.io/badge/Flutter-3.13+-blue?logo=flutter)](https://flutter.dev)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/bikkhoto/MyXen-Mobile-Application?style=social)](https://github.com/bikkhoto/MyXen-Mobile-Application/stargazers)
+[![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-lightgrey)]()
 
-**Token:** $MYXN (SPL, 9 decimals, total supply 1,000,000,000)
+---
 
-MyXen Mobile App is a secure mobile wallet that enables users to:
+## 💡 Overview
 
-- Create and restore Solana wallets
-- Send and receive $MYXN tokens
-- Scan merchant QR codes for payments
-- View transaction history with on-chain verification
-- Secure wallet with biometric authentication
-- Emergency SOS features
-- Encrypted KYC and backup/restore
+MyXenPay is a secure, minimal, **Super Application** built on the **Solana** blockchain. It provides a non-custodial wallet and comprehensive payment services for both **Android** and **iOS** devices, focusing on security and community features.
 
-## Core Features
+This repository contains the full source code for the mobile client, developed using the **Flutter** framework.
 
-### Security & Key Management
+### Why MyXenPay?
 
-- Hardware-backed keystore (when available)
-- Biometric + 6-digit PIN fallback
-- On-device signing (ed25519)
-- BIP39 mnemonic (12 words)
-- Derivation path: `m/44'/501'/0'/0'`
-- AES-256-GCM encryption
-- scrypt fallback (N=16384, r=8, p=1)
+MyXenPay aims to be more than just a wallet. We offer a holistic financial experience centered around the **$MYXN** token (SPL, 9 decimals) with a focus on institutional and educational support.
 
-### Services (20 Locked Features)
+---
 
-1. **Wallet** - Create/restore wallet with secure key management
-2. **MyXenPay** - Send/receive $MYXN tokens
-3. **QR Pay** - Generate and scan QR codes for payments
-4. **Transaction History** - View all transactions
-5. **On-chain Explorer** - Link to blockchain explorer
-6. **Biometric/PIN Lock** - Secure app access
-7. **Emergency SOS** - Emergency contact features
-8. **Backup & Restore** - Encrypted wallet backup
-9. **Seed Vault** - Secure mnemonic storage
-10. **KYC** - Client-side encrypted identity verification
-11. **User Profile & Limits** - Account management
-12. **Merchant Invoice Scan** - Scan and verify invoices
-13. **Merchant Receipt Verification** - Verify payment receipts
-14. **Trusted Merchant Indicator** - Merchant trust badges
-15. **Notifications** - Transaction and security alerts
-16. **Settings** - Theme, language, accessibility
-17. **Support Center** - Help and documentation
-18. **Female Empowerment** - Program information
-19. **Scholarship Status** - Read-only scholarship info
-20. **University Student Tools** - Zero-fee payments for students
+## ✨ Key Features
 
-## Tech Stack
+| Category | Features |
+| :--- | :--- |
+| **Security & Wallet** | **Hardware-backed** Keystore support, Biometric + PIN authentication, **On-device signing**, BIP39 mnemonic support, AES-256-GCM encryption. |
+| **Payments** | Seamless **MyXenPay** (Send/Receive $MYXN), **QR Code Scanner** for merchant payments, on-chain transaction history. |
+| **Community** | Encrypted **KYC** and **Seed Vault** features, Emergency **SOS** capability, read-only status for **Scholarship Programs** and **Female Empowerment** initiatives. |
+| **Tools** | Account management, Trusted Merchant Indicators, support for University Student zero-fee payments. |
 
-- **Framework:** Flutter (single codebase for Android & iOS)
-- **State Management:** Riverpod
-- **Networking:** Dio
-- **Secure Storage:** flutter_secure_storage
-- **Local Database:** drift/sqflite
-- **Biometrics:** local_auth
-- **Cryptography:** ed25519 signing library
-- **QR:** qr_flutter, mobile_scanner
+---
 
-## Project Structure
+## 🛠️ Tech Stack & Requirements
 
-```
-lib/
-├── core/
-│   ├── crypto/              # Key management, encryption
-│   │   ├── mnemonic_service.dart
-│   │   ├── key_manager.dart
-│   │   ├── signer.dart
-│   │   ├── crypto_utils.dart
-│   │   └── encryption/
-│   │       ├── aes_gcm_wrapper.dart
-│   │       ├── hardware_keystore.dart
-│   │       └── scrypt_wrapper.dart
-│   ├── network/             # API clients
-│   ├── storage/             # Local database
-│   └── utils/               # Helpers
-├── features/
-│   ├── wallet/              # Wallet creation/restore
-│   ├── send/                # Send transactions
-│   ├── receive/             # Receive payments
-│   ├── qr/                  # QR code features
-│   ├── history/             # Transaction history
-│   ├── settings/            # App settings
-│   ├── kyc/                 # KYC features
-│   ├── emergency/           # Emergency SOS
-│   └── ...
-├── providers/               # Riverpod providers
-├── models/                  # Data models
-├── widgets/                 # Reusable widgets
-└── main.dart
-```
+This application is built entirely with **Flutter** for a unified cross-platform experience.
 
-## Security Principles
-
-1. **Never send seed or private keys to any server** - Always sign on-device
-2. **Minimize permissions** - Only Camera (QR), Biometric (optional), Notifications (opt-in)
-3. **Client-side KYC encryption** - Server stores only encrypted blobs
-4. **Show fees before confirmation** - Display MYXN + fiat equivalent
-5. **On-chain transparency** - Every receipt shows txHash + "View on Chain"
-6. **Offline-first** - Cached balance & transactions with sync state
-
-## QR Format
-
-**Prefix:** `myxen:`
-
-**Payload JSON:**
-
-```json
-{
-  "v": "1",
-  "t": "pay_request|invoice",
-  "token": "MYXN",
-  "amount": "string (decimal)",
-  "pubkey": "string",
-  "memo": "optional",
-  "ts": "ISO8601",
-  "sig": "optional base64",
-  "signer_pubkey": "optional"
-}
-```
-
-**Encoding:** JSON → UTF-8 → base64url (no padding) → prefix `myxen:`
-
-## Getting Started
+* **Framework:** [Flutter](https://flutter.dev/) (Targeting Android 7.0+ / iOS 12+)
+* **State Management:** Riverpod
+* **Storage:** `flutter_secure_storage` (Secure Storage) and `drift/sqflite` (Local Database)
+* **Blockchain:** Solana SDK (for Dart/Flutter)
 
 ### Prerequisites
 
-- Flutter SDK (latest stable)
-- Android Studio / Xcode
-- Android SDK (API 26+) / iOS 12+
+To build and run this project, you need:
 
-### Installation
+1.  **Flutter SDK** (Latest Stable Channel)
+2.  **Dart SDK**
+3.  **Android Studio** or **Xcode** (for platform-specific builds)
 
-```bash
-# Clone the repository
-git clone <repository-url>
-cd MyXen\ Mobile\ Application
+---
 
-# Install dependencies
-flutter pub get
+## ⚙️ Getting Started
 
-# Run on device/emulator
-flutter run
-```
+Follow these steps to set up the development environment.
 
-### Build
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/bikkhoto/MyXen-Mobile-Application.git
+    cd MyXen-Mobile-Application
+    ```
+2.  **Install dependencies:**
+    ```bash
+    flutter pub get
+    ```
+3.  **Configure Environment Variables:**
+    Create a `.env` file in the root directory based on the provided `.env.example`.
+    ```bash
+    # Example:
+    # BASE_API_URL=...
+    # SOLANA_RPC_URL=...
+    ```
+4.  **Run the application:**
+    ```bash
+    flutter run
+    ```
 
-```bash
-# Android
-flutter build apk --release
+---
 
-# iOS
-flutter build ios --release
-```
+## 📝 Governance & Contributions
 
-## Testing
+We welcome and encourage community contributions. Please review the following guidelines before submitting any code or reporting issues.
 
-```bash
-# Run all tests
-flutter test
+| Policy | File Link | Purpose |
+| :--- | :--- | :--- |
+| **Code of Conduct** | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Defines the standards for behavior within the community. |
+| **Contributing Guide** | [CONTRIBUTING.md](CONTRIBUTING.md) | Details how to submit bug reports, feature requests, and pull requests. |
+| **Security Policy** | [SECURITY.md](SECURITY.md) | Explains how to privately report vulnerabilities to the maintainers. |
+| **License** | [LICENSE](LICENSE) | The project is released under the **MIT License**. |
 
-# Run specific test file
-flutter test test/unit/key_manager_test.dart
+---
 
-# Run with coverage
-flutter test --coverage
-```
+## 📧 Contact
 
-## Performance Targets
-
-- Cold start: ≤2.5s on mid-range devices
-- Memory usage: <200MB typical
-- Animations: fade/scale ≤150ms
-- Reduce Motion toggle available
-
-## Accessibility
-
-- Color contrast compliance
-- Large tap targets (48x48dp minimum)
-- Screen reader support
-- Reduce Motion option
-
-## License
-
-[Add License Information]
-
-## Support
-
-For support, please visit the Support Center in the app or contact [support contact].
-
-## Security Audit
-
-Before release, a full mobile security audit must be completed covering:
-
-- Key extraction attempts
-- Replay attacks
-- Signed transaction validation
-- Emergency feature misuse
-- KYC encryption correctness
+For support or questions, please open an [Issue here](https://github.com/bikkhoto/MyXen-Mobile-Application/issues).
