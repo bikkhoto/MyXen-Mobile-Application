@@ -6,6 +6,7 @@ import '../../core/theme/app_theme.dart';
 import '../../providers/wallet_provider.dart';
 import 'send_confirmation_screen.dart';
 import '../qr/qr_scanner_screen.dart';
+import '../../models/wallet_model.dart';
 
 class SendScreen extends ConsumerStatefulWidget {
   final String? prefilledRecipient;

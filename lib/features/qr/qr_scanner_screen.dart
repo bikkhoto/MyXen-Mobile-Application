@@ -51,7 +51,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
 
   void _handleMyxenQr(String qrCode) {
     try {
-      final paymentRequest = QrPaymentRequest.fromQrString(qrCode);
+      final paymentRequest = QrPaymentRequestX.fromQrString(qrCode);
 
       // Verify signature if it's an invoice
       if (paymentRequest.isInvoice && !paymentRequest.isSigned) {

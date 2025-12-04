@@ -151,7 +151,9 @@ class KeyManager {
       // Zeroize seed
       zeroize(seed);
       
-      return kp.key; // 32-byte private key
+      // Convert to Uint8List if needed
+      final key = kp.key;
+      return key is Uint8List ? key : Uint8List.fromList(key);
     } catch (e) {
       zeroize(seed);
       throw Exception('Failed to derive private key: $e');
@@ -171,7 +173,8 @@ class KeyManager {
 
     try {
       // Derive public key from private key
-      final pubKey = await ED25519_HD_KEY.getPublicKey(privKey, false);
+      final pubKeyList = await ED25519_HD_KEY.getPublicKey(privKey, false);
+      final pubKey = pubKeyList is Uint8List ? pubKeyList : Uint8List.fromList(pubKeyList);
       
       // Zeroize private key
       zeroize(privKey);

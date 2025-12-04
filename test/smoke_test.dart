@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myxen/features/kyc/kyc_screen.dart';
 import 'package:myxen/features/emergency/emergency_screen.dart';
-import 'package:myxen/features/qr/qr_scanner_screen.dart';
 import 'package:myxen/features/wallet/create_wallet_screen.dart';
 import 'package:myxen/features/settings/security_settings_screen.dart';
 
@@ -45,8 +44,5 @@ void main() {
       await tester.pumpWidget(const MockWrapper(child: SecuritySettingsScreen()));
       expect(find.byType(SecuritySettingsScreen), findsOneWidget);
     });
-    
-    // Note: QR Scanner might be tricky to test in widget test due to camera plugin
-    // We just verify it imports and the class exists by referencing it above.
   });
 }

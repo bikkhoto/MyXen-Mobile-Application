@@ -12,7 +12,7 @@ final keyManagerProvider = Provider<KeyManager>((ref) {
 
 /// Solana Client Provider
 final solanaClientProvider = Provider<SolanaClient>((ref) {
-  return SolanaClient(rpcUrl: ApiConfig.rpcUrl);
+  return SolanaClient(rpcUrl: ApiConfig.currentRpc);
 });
 
 /// Current Wallet Public Key Provider

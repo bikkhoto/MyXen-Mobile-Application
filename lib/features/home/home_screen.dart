@@ -7,6 +7,7 @@ import '../../providers/database_provider.dart';
 import '../send/send_screen.dart';
 import '../receive/receive_screen.dart';
 import '../settings/settings_screen.dart';
+import '../../models/wallet_model.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});

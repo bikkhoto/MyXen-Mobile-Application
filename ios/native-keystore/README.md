@@ -42,6 +42,7 @@ SecureKeystore (Class)
 ### Step 1: Add Module to Project
 
 **In `ios/Podfile`:**
+
 ```ruby
 target 'Runner' do
   use_frameworks!
@@ -57,6 +58,7 @@ end
 ### Step 2: Configure Entitlements
 
 **In `ios/Runner/Runner.entitlements`:**
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -80,6 +82,7 @@ end
 ### Step 3: Add Privacy Descriptions
 
 **In `ios/Runner/Info.plist`:**
+
 ```xml
 <key>NSFaceIDUsageDescription</key>
 <string>We use Face ID to securely sign transactions with your wallet keys.</string>
@@ -88,6 +91,7 @@ end
 ### Step 4: Register in AppDelegate
 
 **In `ios/Runner/AppDelegate.swift`:**
+
 ```swift
 import UIKit
 import Flutter
@@ -123,6 +127,7 @@ import NativeKeystore
 ### Swift Packages (if needed)
 
 For scrypt support (CryptoKit doesn't include scrypt):
+
 ```swift
 // Package.swift or SPM
 dependencies: [
@@ -146,6 +151,7 @@ dependencies: [
 ## Building
 
 ### Debug Build
+
 ```bash
 cd ios
 pod install
@@ -153,16 +159,19 @@ xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Debug
 ```
 
 ### Release Build
+
 ```bash
 xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release
 ```
 
 ### Run Unit Tests
+
 ```bash
 xcodebuild test -workspace NativeKeystore.xcworkspace -scheme NativeKeystore -destination 'platform=iOS Simulator,name=iPhone 15'
 ```
 
 ### Run on Device
+
 ```bash
 xcodebuild test -workspace NativeKeystore.xcworkspace -scheme NativeKeystore -destination 'platform=iOS,name=Your iPhone'
 ```
@@ -172,6 +181,7 @@ xcodebuild test -workspace NativeKeystore.xcworkspace -scheme NativeKeystore -de
 ## Testing
 
 ### Unit Tests (Simulator)
+
 Located in `NativeKeystoreTests/`
 
 ```bash
@@ -179,6 +189,7 @@ xcodebuild test -scheme NativeKeystore -destination 'platform=iOS Simulator,name
 ```
 
 ### Integration Tests (Device)
+
 Located in `NativeKeystoreUITests/`
 
 ```bash
@@ -193,6 +204,7 @@ xcodebuild test -scheme NativeKeystore -destination 'platform=iOS,name=Your iPho
 ### Build Settings
 
 **In `NativeKeystore.xcconfig`:**
+
 ```
 SWIFT_VERSION = 5.9
 IPHONEOS_DEPLOYMENT_TARGET = 13.0
@@ -203,6 +215,7 @@ SWIFT_OPTIMIZATION_LEVEL = -O
 ### Feature Flags
 
 **In `Config.plist`:**
+
 ```xml
 <dict>
     <key>ForceSecureEnclave</key>
@@ -221,6 +234,7 @@ SWIFT_OPTIMIZATION_LEVEL = -O
 ## Security Considerations
 
 ### ✅ Secure Enclave Mode
+
 - Private key generated inside Secure Enclave
 - Key **never** leaves hardware boundary
 - Protected against:
@@ -230,6 +244,7 @@ SWIFT_OPTIMIZATION_LEVEL = -O
   - Side-channel attacks
 
 ### ⚠️ Keychain Fallback Mode
+
 - Private key encrypted with scrypt + AES-GCM
 - Stored in iOS Keychain with `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`
 - Protected against:
@@ -240,6 +255,7 @@ SWIFT_OPTIMIZATION_LEVEL = -O
   - Debugger attachment in runtime
 
 ### Memory Safety
+
 - All sensitive byte arrays zeroized after use
 - No sensitive data in console logs
 - Swift's automatic reference counting clears memory predictably
@@ -265,11 +281,13 @@ SWIFT_OPTIMIZATION_LEVEL = -O
 ## Performance Targets
 
 ### Secure Enclave Mode
+
 - Key generation: < 500ms (p95)
 - Signature: < 300ms (p95)
 - Public key retrieval: < 50ms (p95)
 
 ### Keychain Fallback
+
 - Key derivation (scrypt): < 2000ms (N=32768, p95, iPhone 8)
 - Encryption/Decryption: < 100ms (p95)
 - Signature: < 50ms (p95)
@@ -308,14 +326,17 @@ print("Secure Enclave support: \(SecureEnclave.isAvailable)")
 ## Common Issues
 
 ### Issue: Secure Enclave always returns false
+
 **Cause:** Device is simulator or lacks A7+ chip.
 **Solution:** Falls back to Keychain automatically.
 
 ### Issue: Face ID prompt not showing
+
 **Cause:** Missing `NSFaceIDUsageDescription` in Info.plist.
 **Solution:** Add privacy description as shown above.
 
 ### Issue: Keys lost after app reinstall
+
 **Cause:** Keychain clears on uninstall.
 **Solution:** Use encrypted backup feature. Restore from backup after reinstall.
 
@@ -358,6 +379,7 @@ Copyright (c) 2025 MyXen. See LICENSE file in repository root.
 ## Support
 
 For issues specific to this module:
+
 1. Check console logs (Xcode console or device logs)
 2. Verify device capabilities
 3. Review this README's troubleshooting section
