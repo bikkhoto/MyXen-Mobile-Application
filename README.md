@@ -240,6 +240,8 @@ All contributors must follow the repository CODE_OF_CONDUCT. Respectful, inclusi
 ## Appendix: quick file map
 
 * `src/` — mobile app source
+* `docs/` — CI/CD documentation and other guides
+* `security/` — signing policy, security advisories, and key management
 * `SECURITY.md` — security practices & audit info
 * `CONTRIBUTING.md` — how to contribute & commit rules
 * `LEGAL.md` — disclaimers & privacy policy links
