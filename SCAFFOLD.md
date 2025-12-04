@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/myxenpay-logo-dark.png" alt="MyXenPay Logo" width="400">
+  <img src="assets/images/myxenpay-logo-dark.png" alt="MyXenPay Logo" width="400">
 </p>
 
 <h1 align="center">MyXenPay — Mobile App Repository Scaffold (production-grade)</h1>
