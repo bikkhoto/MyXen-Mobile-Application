@@ -171,8 +171,7 @@ class KeyManager {
 
     try {
       // Derive public key from private key
-      final kp = await ED25519_HD_KEY.getMasterKeyFromSeed(privKey);
-      final pubKey = kp.publicKey;
+      final pubKey = await ED25519_HD_KEY.getPublicKey(privKey, false);
       
       // Zeroize private key
       zeroize(privKey);
