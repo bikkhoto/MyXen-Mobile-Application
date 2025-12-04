@@ -16,315 +16,257 @@ Provide a secure, private, and auditable process for receiving, triaging, fixing
 
 ---
 
-## 1. How Reporters Should Submit Vulnerabilities
+## 1) How reporters should submit vulnerabilities (public + private)
 
-### Primary (Preferred)
+**Primary (preferred):** Email `security@myxen.foundation` using PGP-encrypted message.  
+**Alternate:** GitHub Security Advisory (private advisory) created by repository maintainers when reporter uses the repo's "Report vulnerability" flow.  
+**Emergency contact:** `security-oncall@myxen.foundation` (pager / PagerDuty) — for active exploits.
 
-Email `security@myxen.foundation` using PGP-encrypted message.
+### Email / PGP instructions for reporters
 
-### Alternate
-
-GitHub Security Advisory (private advisory) created by repository maintainers when reporter uses the repo's "Report vulnerability" flow.
-
-### Emergency Contact
-
-`security-oncall@myxen.foundation` (pager duty) — for active exploits.
+- Send to: `security@myxen.foundation`  
+- Subject: `Security report: MyXenPay - [short summary]`  
+- For privacy, encrypt with our PGP key:
+  - **PGP fingerprint:** `<PASTE_REAL_FINGERPRINT_HERE>`
+  - **Public key URL:** `https://myxenpay.finance/pgp.pub` (or other hosted location)
+- If you cannot PGP-encrypt, send the report unencrypted but mark it "sensitive" — we will reply with a secure upload link.
+- Include: affected component (Android/iOS/Backend/Contract), steps to reproduce, proof-of-concept (PoC), impact, affected versions, and any exploitability details.
 
 ---
 
-## 2. Email / PGP Instructions for Reporters
+## 2) Quick triage & acknowledgement (first 24 hours)
 
-Send to: `security@myxen.foundation`
+When a report arrives:
 
-**Subject format:** `Security report: MyXenPay - [short summary]`
+1. Acknowledge receipt within 24 hours to the reporter (automated + personalized).  
+2. Create a **private Security Advisory** in GitHub (or private tracker).  
+3. Assign initial severity using our classification.  
+4. Start investigating — reproduce PoC in an isolated environment.  
+5. If the issue has been publicly disclosed accidentally, move discussion to the private advisory and lock public threads.
 
-For privacy, encrypt with our PGP key:
+**Acknowledgement template** (short):
 
 ```
+Subject: [MyXenPay] Acknowledgement of security report
+
+Hello <Researcher Name>,
+
+Thank you — we received your report regarding MyXenPay and we take this seriously.
+
+Ticket: MYXN-SEC-<XXXX>
+Assigned triage lead: <name/email>
+
+We will confirm next steps within 24 hours and provide an estimated timeline for remediation. If you provided a PGP-encrypted message, we will continue securely. If not, we can provide a secure upload link upon request.
+
+Regards,
 MyXen Foundation Security Team
-PGP Key Fingerprint: [TO BE PUBLISHED]
-Key available at: https://myxenpay.finance/.well-known/pgp-key.asc
-```
-
-### What to Include in Your Report
-
-* Clear description of the vulnerability
-* Steps to reproduce
-* Affected versions / platforms (Android/iOS)
-* Proof-of-concept code or screenshots (if available)
-* Impact assessment (what could an attacker achieve?)
-* Your contact information for follow-up
-* Preferred attribution name (for public disclosure credit)
-
----
-
-## 3. Response Timeline (SLA)
-
-| Severity   | Initial Response | Triage Complete | Fix Target    | Public Advisory |
-| ---------- | ---------------- | --------------- | ------------- | --------------- |
-| Critical   | 4 hours          | 24 hours        | 48-72 hours   | After fix       |
-| High       | 24 hours         | 48 hours        | 7 days        | After fix       |
-| Medium     | 48 hours         | 5 days          | 14 days       | After fix       |
-| Low        | 5 days           | 10 days         | 30 days       | After fix       |
-
----
-
-## 4. Severity Classification
-
-### Critical
-
-* Remote code execution
-* Private key extraction
-* Unauthorized fund transfers
-* Authentication bypass affecting all users
-* Complete KYC data exposure
-
-### High
-
-* Significant data leakage (partial PII)
-* Session hijacking
-* Privilege escalation
-* Denial of service affecting payments
-
-### Medium
-
-* Limited information disclosure
-* Cross-site scripting (XSS)
-* Insecure data storage (non-critical data)
-* Logic flaws with limited impact
-
-### Low
-
-* Minor information leakage
-* Best practice violations
-* Theoretical attacks with high complexity
-* UI/UX security concerns
-
----
-
-## 5. Internal Triage Process
-
-### Step 1: Acknowledge Receipt
-
-* Confirm receipt within SLA
-* Assign tracking ID: `MYXEN-SEC-YYYY-NNN`
-* Notify Security Lead
-
-### Step 2: Validate & Reproduce
-
-* Attempt to reproduce the issue
-* Assess impact and severity
-* Determine affected components
-
-### Step 3: Assign Response Team
-
-| Role              | Responsibility                                    |
-| ----------------- | ------------------------------------------------- |
-| Security Lead     | Overall coordination, disclosure decisions        |
-| Engineering Lead  | Fix development and review                        |
-| Release Manager   | Hotfix release coordination                       |
-| Communications    | User notifications, public advisory drafting      |
-| Legal (if needed) | Compliance, regulatory notification requirements  |
-
-### Step 4: Develop Fix
-
-* Create private branch for fix
-* Peer review by at least 2 engineers
-* Security Lead sign-off required
-* Regression testing mandatory
-
-### Step 5: Release & Notify
-
-* Deploy hotfix through expedited release process
-* Notify reporter of fix
-* Prepare public advisory (if applicable)
-
----
-
-## 6. Coordinated Disclosure Policy
-
-MyXen Foundation follows responsible disclosure principles:
-
-1. **Private Period:** We request 90 days to address vulnerabilities before public disclosure
-2. **Mutual Agreement:** Disclosure timeline may be adjusted based on severity and fix complexity
-3. **Credit:** Reporters receive public credit unless they request anonymity
-4. **No Legal Action:** We do not pursue legal action against good-faith security researchers
-
-### Exceptions to 90-Day Window
-
-* Active exploitation in the wild → immediate disclosure after fix
-* Critical severity with simple fix → shorter window negotiated
-* Third-party dependency issue → coordinate with upstream maintainers
-
----
-
-## 7. Advisory Publication Format
-
-### GitHub Security Advisory (GHSA)
-
-All advisories published via GitHub Security Advisories for:
-* CVE assignment
-* Automated tooling integration
-* Audit trail
-
-### Advisory Template
-
-```markdown
-# Security Advisory: [Title]
-
-## Summary
-[Brief description of the vulnerability]
-
-## Severity
-[Critical / High / Medium / Low]
-
-## Affected Versions
-- MyXenPay iOS: x.y.z - a.b.c
-- MyXenPay Android: x.y.z - a.b.c
-
-## Patched Versions
-- MyXenPay iOS: a.b.d+
-- MyXenPay Android: a.b.d+
-
-## Description
-[Detailed technical description]
-
-## Impact
-[What could an attacker achieve?]
-
-## Mitigation
-[Steps users should take]
-
-## Credit
-[Reporter attribution]
-
-## References
-- CVE-YYYY-NNNNN
-- Related PRs / commits
+security@myxen.foundation
 ```
 
 ---
 
-## 8. Communication Channels
+## 3) Private triage checklist (do these immediately)
 
-### Internal
-
-* Security Slack channel: `#security-incidents`
-* Incident war room (for Critical/High)
-* Security mailing list: `security-team@myxen.foundation`
-
-### External
-
-* Security advisory page: GitHub Security Advisories
-* User notification: In-app banner + push notification (for critical issues)
-* Email notification: Registered users (for critical issues affecting their data)
-* Social media: @MyXenPay (after fix is available)
+- [ ] Validate reporter identity (if needed).
+- [ ] Reproduce PoC in isolated environment (no production data).
+- [ ] Identify root cause and attack vectors.
+- [ ] Determine affected versions and components.
+- [ ] Evaluate exploitability and user safety risk.
+- [ ] Classify severity (Critical/High/Medium/Low).
+- [ ] Decide short-term mitigation (hotfix/rollback/permission block).
+- [ ] Create private GitHub Security Advisory and internal ticket.
+- [ ] Communicate estimated disclosure timeline to reporter.
 
 ---
 
-## 9. Post-Incident Review
+## 4) Severity classification (quick scheme)
 
-After each security incident:
+- **Critical** — Active exploit can drain user funds, exfiltrate keys, or allow arbitrary code execution in signing/keys scope; immediate hotfix required.
+- **High** — Exploitable vulnerability enabling transaction forgery, account takeover without physical device, or server-side decryption of PII.
+- **Medium** — Local escalations, privacy leaks without immediate financial loss.
+- **Low** — Information disclosure with minimal impact or non-exploitable bugs.
 
-1. **Root Cause Analysis** — Document how the vulnerability was introduced
-2. **Detection Gap Analysis** — Why wasn't this caught earlier?
-3. **Process Improvements** — Update security practices, testing, or tooling
-4. **Timeline Review** — Was SLA met? What caused delays?
-5. **Documentation Update** — Update threat model, security docs
+Where possible, calculate and store a CVSS v3.1 score.
 
-### Post-Incident Report Template
+---
 
-```markdown
-# Post-Incident Report: MYXEN-SEC-YYYY-NNN
+## 5) Fix plan & release approach
 
-## Incident Summary
-## Timeline of Events
-## Root Cause
-## Impact Assessment
-## Response Effectiveness
-## Lessons Learned
-## Action Items
+- **Critical / High**
+  - Create `hotfix/SEC-xxxx` branch immediately.
+  - Expedited security review (min. Security Lead + Senior Engineer).
+  - Sign hotfix artifact via protected signing pipeline (HSM/KMS).
+  - Deploy staged rollout (1% → 100%) or force upgrade if necessary.
+  - Prepare public advisory and request CVE if applicable.
+- **Medium / Low**
+  - Schedule fix according to release cadence but keep advisory private until fix merged.
+  - Coordinate disclosure timing with reporter.
+
+---
+
+## 6) GitHub Security Advisory workflow
+
+1. Create a **Draft security advisory** in the repository (Security → Advisories → New draft advisory).
+2. Populate: title, affected versions (introduced/fixed), severity, technical description, reproduction steps (private PoC), mitigation/fix (PR links).
+3. Use the advisory's private discussion to communicate with the reporter and collaborators.
+4. After fix verification, publish advisory and request CVE (optional).
+5. Do **not** publish until fixes are available or coordinated with reporter and stakeholders.
+
+---
+
+## 7) Disclosure & CVE coordination
+
+- Request CVE when publishing advisory for user-impacting vulnerabilities.
+- Typical embargo window: 7–90 days depending on severity and remediation difficulty.
+- Public advisory must include: impact summary, affected versions, fixed versions, mitigation steps, CVE (if assigned), and credits (if reporter consents).
+
+---
+
+## 8) Templates
+
+### Reporter initial email (for your site)
+
+```
+Subject: Security report — MyXenPay
+
+Hello MyXen Foundation Security Team,
+
+I would like to report a security issue affecting the MyXenPay mobile application.
+
+Summary:
+* Component: (Android / iOS / Backend / Smart contract)
+* Affected versions: (e.g., Android v1.2.3)
+* Impact: (brief)
+
+Steps to reproduce / PoC:
+1. ...
+2. ...
+3. ...
+
+Proof-of-concept artifacts:
+* [attach encrypted PoC, logs]
+
+I encrypted this message with your PGP key (fingerprint: <FINGERPRINT>) — public key here: https://myxenpay.finance/pgp.pub
+
+Please acknowledge receipt and provide a ticket ID.
+
+Regards,
+<Name / Handle>
+<Contact>
+```
+
+### Private advisory description (for GitHub draft)
+
+```
+Title: [short] - [component] - [brief impact]
+
+Description:
+* Summary: one paragraph describing the vulnerability and impact.
+* Affected components: (list)
+* Affected versions: (introduced in vX.Y.Z through vA.B.C)
+* Root cause: (technical cause)
+* Reproduction: (high-level steps; private PoC attached)
+* Mitigation/fix: (PR link(s), commit hashes)
+* Workarounds: (if any)
+* CVSS: (score and vector if available)
+* Reporter: [handle] (consent for credit: yes/no)
+* Timeline: (reported / triaged / fixed / published)
+```
+
+### Public advisory publish template
+
+```
+Title: Security advisory — MyXenPay [short descriptor] (CVE-YYYY-NNNN)
+
+Summary:
+A vulnerability affecting MyXenPay mobile (Android/iOS) could allow <brief impact>. This has been fixed in versions <fixed-version>.
+
+Affected Versions:
+* Introduced: vX.Y.Z
+* Fixed: vA.B.C and later
+
+Impact:
+* High-level description of what an attacker could do.
+
+Mitigation:
+* Upgrade to vA.B.C (Android: Play / iOS: App Store) immediately.
+* If you cannot upgrade immediately: <workarounds>.
+
+CVE: CVE-YYYY-NNNN (if assigned)
+
+Credits:
+* Researcher: <name/handle> (opt-in for credit)
+
+Report & Contact:
+If you have further details, contact security@myxen.foundation (PGP available).
+
+Disclosure timeline:
+* Reported: YYYY-MM-DD
+* Fixed: YYYY-MM-DD
+* Published: YYYY-MM-DD
 ```
 
 ---
 
-## 10. Bug Bounty Program
+## 9) SLAs & response times
 
-MyXen Foundation operates a bug bounty program for qualifying vulnerabilities.
+- **Acknowledge report:** within 24 hours.
+- **Initial triage:** within 72 hours.
+- **Patch (Critical):** 48–72 hours (hotfix lane) or immediate mitigation.
+- **Patch (High):** within 7 days.
+- **Patch (Medium):** within 14 days.
+- **Patch (Low):** within 30 days.
 
-### Rewards (Subject to Change)
-
-| Severity | Reward Range        |
-| -------- | ------------------- |
-| Critical | $5,000 - $25,000    |
-| High     | $1,000 - $5,000     |
-| Medium   | $250 - $1,000       |
-| Low      | Recognition only    |
-
-### Qualifying Criteria
-
-* First reporter of the issue
-* Valid, reproducible vulnerability
-* Not previously known or in-progress fix
-* Reported through proper channels
-* No exploitation of the vulnerability beyond proof-of-concept
-* No disclosure before fix is available
-
-### Out of Scope
-
-* Social engineering attacks
-* Physical attacks on infrastructure
-* Denial of service attacks
-* Issues in third-party services
-* Issues requiring physical access to device
-* Vulnerabilities in non-production environments
+Always communicate timeline changes to the reporter.
 
 ---
 
-## 11. Record Keeping
+## 10) Rewards & Recognition (optional)
 
-All security incidents must be logged in:
-
-* `security/advisories/` directory (sanitized public records)
-* Internal security incident database (full details)
-* Compliance reporting systems (as required)
-
-Retention: Minimum 7 years for compliance purposes.
+- Offer public recognition if the reporter consents.
+- Optionally run a bounty program (separate policy).
 
 ---
 
-## 12. Regulatory Notification Requirements
+## 11) Tooling & integrations (recommended)
 
-Depending on jurisdiction and data affected:
-
-| Regulation | Notification Requirement                        |
-| ---------- | ----------------------------------------------- |
-| GDPR       | 72 hours to supervisory authority (if PII)     |
-| PDPA       | As soon as practicable to affected individuals |
-| PCI-DSS    | Per card brand requirements                    |
-| Local Laws | Per jurisdiction requirements                  |
-
-Legal team must be consulted for any incident involving:
-* Personal data breach
-* Financial data exposure
-* Cross-border data transfer issues
+- GitHub Security Advisories (private discussions and CVE publishing).
+- Dependabot and Snyk (SCA).
+- Semgrep / CodeQL (SAST).
+- Private tracker (Jira) for internal audit trail.
+- PGP for secure email submissions.
 
 ---
 
-## 13. Contact Information
+## 12) Post-disclosure actions
 
-| Purpose                | Contact                              |
-| ---------------------- | ------------------------------------ |
-| Security Reports       | security@myxen.foundation            |
-| Emergency (Active Exploit) | security-oncall@myxen.foundation |
-| General Inquiries      | support@myxen.foundation             |
-| Legal / Compliance     | legal@myxen.foundation               |
+- Publish advisory once coordinated and fix verified.
+- Rotate secrets/keys if necessary.
+- Run postmortem and update procedures.
+- Protect findings by checking for similar code patterns.
 
 ---
 
-## 14. Document Revision
+## 13) Process summary (one line)
 
-* **Version:** 1.0
+Receive → Acknowledge → Private Advisory → Triage → Fix (hotfix if necessary) → Sign & Release → Publish Advisory & CVE → Postmortem
+
+---
+
+## 14) Contact Information
+
+| Purpose                    | Contact                              |
+| -------------------------- | ------------------------------------ |
+| Security Reports           | security@myxen.foundation            |
+| Emergency (Active Exploit) | security-oncall@myxen.foundation     |
+| General Inquiries          | support@myxen.foundation             |
+| Legal / Compliance         | legal@myxen.foundation               |
+
+---
+
+## 15) Document Revision
+
+* **Version:** 2.0
 * **Last Updated:** December 2025
 * **Review Frequency:** Every 6 months or after significant incidents
 * **Approval Required:** Security Lead + CTO
