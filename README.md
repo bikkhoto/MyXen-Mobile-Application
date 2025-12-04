@@ -1,7 +1,13 @@
-# MyXen Foundation — Mobile Application (MyXenPay)
+<p align="center">
+  <img src="assets/myxenpay-logo-dark.png" alt="MyXenPay Logo" width="400">
+</p>
 
-> Professional README for the MyXen Foundation mobile app repository.
-> Purpose: a single-source, production-ready README to onboard engineers, auditors, partners, and app stores reviewers.
+<h1 align="center">MyXen Foundation — Mobile Application (MyXenPay)</h1>
+
+<p align="center">
+  <strong>Professional README for the MyXen Foundation mobile app repository.</strong><br>
+  Purpose: a single-source, production-ready README to onboard engineers, auditors, partners, and app stores reviewers.
+</p>
 
 ---
 

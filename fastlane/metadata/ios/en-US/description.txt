@@ -1,0 +1,1 @@
+MyXenPay is the official mobile wallet for the MyXen Foundation. Secure wallet, merchant QR payment, and student adoption features.

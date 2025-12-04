@@ -1,5 +1,12 @@
-MyXen Foundation — Mobile Application (MyXen Foundation)
-**Security & Privacy Guidelines**
+<p align="center">
+  <img src="assets/myxenpay-logo-dark.png" alt="MyXenPay Logo" width="400">
+</p>
+
+<h1 align="center">MyXen Foundation — Mobile Application (MyXenPay)</h1>
+
+<p align="center">
+  <strong>Security & Privacy Guidelines</strong>
+</p>
 
 ---
 

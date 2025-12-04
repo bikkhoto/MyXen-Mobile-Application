@@ -7,6 +7,18 @@
 .buildlog/
 .history
 
+# Node / RN
+node_modules/
+.env
+*.p12
+.DS_Store
+*.xcarchive
+.idea/
+.vscode/
+
+# Fastlane
+fastlane/report.xml
+
 
 
 # Flutter repo-specific

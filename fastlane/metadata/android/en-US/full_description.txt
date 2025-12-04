@@ -1,0 +1,1 @@
+MyXenPay is a secure, privacy-first mobile wallet for the MyXen Foundation ecosystem. It supports Solana-based transactions, QR merchant payments, and encrypted KYC flows.

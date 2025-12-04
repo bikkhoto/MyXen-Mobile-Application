@@ -1,0 +1,23 @@
+{
+  "name": "myxenpay-mobile",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "lint": "eslint 'src/**/*.{js,ts,tsx}'",
+    "test": "jest --coverage",
+    "build:android": "cd android && ./gradlew assembleRelease",
+    "build:ios": "fastlane build_ios"
+  },
+  "dependencies": {
+    "react": "18.2.0",
+    "react-native": "0.71.11"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.0",
+    "eslint": "^8.40.0",
+    "jest": "^29.6.0"
+  }
+}

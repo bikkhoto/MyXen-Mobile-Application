@@ -1,0 +1,4 @@
+Release notes (Android)
+- Highlights:
+- Bug fixes:
+- Security notes:

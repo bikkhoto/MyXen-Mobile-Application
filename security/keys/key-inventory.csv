@@ -1,0 +1,5 @@
+Key ID,Key Type,Platform,Storage Location,Created Date,Rotation/Expiry Date,Responsible,Status,Thumbprint/Fingerprint,Notes
+kms-key-23-prod,Android Upload Key,Android,"projects/myxen/locations/global/keyRings/prod/cryptoKeys/kms-key-23",2024-10-01,2025-10-01,security_lead@myxen.foundation,active,ab12cd34ef56...,"Google Play Upload key; used for release uploads via CI"
+asc-api-77,App Store Connect API Key (p8),iOS,hashicorp-vault://secrets/asc-api-77,2024-11-12,2025-11-12,release_manager@myxen.foundation,active,na,"Used by Fastlane deliver/upload; rotate annually"
+hsm-key-01,Signing HSM Key,Both,cloud-hsm://hsm-prod/key-01,2024-01-15,2024-07-15,devops@myxen.foundation,revoked,c0ffee...,"Emergency rekey after suspected compromise; revoked 2024-07-16"
+debug-key-local,Debug Key,Android,local-dev-machines,2023-07-10,2024-01-01,dev_team,retired,na,"Never used in CI; for local dev only"
