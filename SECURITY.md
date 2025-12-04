@@ -247,4 +247,15 @@ Researchers who responsibly disclose valid vulnerabilities may receive acknowled
 
 ---
 
+## **14. Additional Security Documentation**
+
+For more detailed security policies and procedures, see the `security/` directory:
+
+* **[`security/SIGNING_POLICY.md`](security/SIGNING_POLICY.md)** — Application signing, key management, and secure release policy
+* **[`security/SECURITY_ADVISORIES.md`](security/SECURITY_ADVISORIES.md)** — Operational playbook for vulnerability management
+* **[`security/advisories/`](security/advisories/)** — Archive of published security advisories
+* **[`security/keys/`](security/keys/)** — Key inventory and rotation documentation
+
+---
+
 # **End of SECURITY.md**
