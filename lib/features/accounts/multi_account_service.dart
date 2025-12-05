@@ -1,4 +1,5 @@
 // lib/features/accounts/multi_account_service.dart
+import 'package:drift/drift.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../core/storage/database.dart';
 
@@ -68,8 +69,8 @@ class MultiAccountService {
     for (var i = 0; i < accounts.length; i++) {
       await _database.updateWalletAccount(
         WalletAccountsCompanion(
-          publicKey: accounts[i].publicKey,
-          isActive: i == index,
+          publicKey: Value(accounts[i].publicKey),
+          isActive: Value(i == index),
         ),
       );
     }
@@ -80,9 +81,9 @@ class MultiAccountService {
     final accounts = await getAllAccounts();
     if (index < accounts.length) {
       // Delete from database
-      await _database.delete(_database.walletAccounts)
-        ..where((t) => t.publicKey.equals(accounts[index].publicKey))
-        ..go();
+      await (_database.delete(_database.walletAccounts)
+            ..where((t) => t.publicKey.equals(accounts[index].publicKey)))
+          .go();
 
       // Update count
       final count = await getAccountCount();

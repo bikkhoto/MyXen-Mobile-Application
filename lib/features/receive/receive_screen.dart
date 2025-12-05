@@ -8,6 +8,7 @@ import '../../core/theme/app_theme.dart';
 import '../../providers/wallet_provider.dart';
 import '../../models/qr_payment_request.dart';
 
+import '../../providers/session_provider.dart';
 class ReceiveScreen extends ConsumerStatefulWidget {
   const ReceiveScreen({super.key});
 
@@ -20,6 +21,30 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
   final _memoController = TextEditingController();
   bool _showQR = false;
   String? _qrData;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize wallet public key if null
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (ref.read(walletPublicKeyProvider) == null) {
+        _initializeWallet();
+      }
+    });
+  }
+
+  Future<void> _initializeWallet() async {
+    try {
+      final keyManager = ref.read(keyManagerProvider);
+      final pin = ref.read(sessionPinProvider);
+      final publicKey = await keyManager.getPublicKeyBase58(pin: pin);
+      if (publicKey != null) {
+        ref.read(walletPublicKeyProvider.notifier).state = publicKey;
+      }
+    } catch (e) {
+      debugPrint('Error initializing wallet in receive screen: $e');
+    }
+  }
 
   @override
   void dispose() {
@@ -111,7 +136,7 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
                         'Your Wallet Address',
                         style: TextStyle(
                           fontSize: 14,
-                          color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                          color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
                         ),
                       ),
                       const SizedBox(height: AppTheme.spacingMd),
@@ -131,7 +156,7 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
                         icon: const Icon(Icons.copy, size: 18),
                         label: const Text('Copy Address'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppTheme.primaryColor.withOpacity(0.2),
+                          backgroundColor: AppTheme.primaryColor.withValues(alpha: 0.2),
                           foregroundColor: AppTheme.primaryColor,
                           elevation: 0,
                         ),
@@ -216,7 +241,7 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
                   'Scan this QR code to receive payment',
                   style: TextStyle(
                     fontSize: 14,
-                    color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                    color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -256,20 +281,20 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
               Container(
                 padding: const EdgeInsets.all(AppTheme.spacingMd),
                 decoration: BoxDecoration(
-                  color: AppTheme.infoColor.withOpacity(0.1),
+                  color: AppTheme.infoColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   border: Border.all(
-                    color: AppTheme.infoColor.withOpacity(0.3),
+                    color: AppTheme.infoColor.withValues(alpha: 0.3),
                   ),
                 ),
-                child: Row(
+                child: const Row(
                   children: [
                     Icon(
                       Icons.info_outline,
                       color: AppTheme.infoColor,
                       size: 20,
                     ),
-                    const SizedBox(width: AppTheme.spacingMd),
+                    SizedBox(width: AppTheme.spacingMd),
                     Expanded(
                       child: Text(
                         'Only send MYXN tokens to this address. Sending other tokens may result in loss of funds.',

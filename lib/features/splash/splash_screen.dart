@@ -1,17 +1,20 @@
 // lib/features/splash/splash_screen.dart
 import 'package:flutter/material.dart';
+import "../../providers/wallet_provider.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
+import "../auth/login_screen.dart";
 import 'dart:async';
 import '../../core/theme/app_theme.dart';
 import '../onboarding/onboarding_screen.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
+class _SplashScreenState extends ConsumerState<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
@@ -42,20 +45,31 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    // Navigate to onboarding after delay
-    Timer(const Duration(seconds: 3), () {
+    // Navigate based on wallet existence
+    Timer(const Duration(seconds: 3), () async {
       if (mounted) {
-        Navigator.of(context).pushReplacement(
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                const OnboardingScreen(),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-              return FadeTransition(opacity: animation, child: child);
-            },
-            transitionDuration: const Duration(milliseconds: 500),
-          ),
-        );
+        final keyManager = ref.read(keyManagerProvider);
+        final hasWallet = await keyManager.hasWallet();
+        
+        if (!mounted) return;
+
+        if (hasWallet) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+          );
+        } else {
+          Navigator.of(context).pushReplacement(
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const OnboardingScreen(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return FadeTransition(opacity: animation, child: child);
+              },
+              transitionDuration: const Duration(milliseconds: 500),
+            ),
+          );
+        }
       }
     });
   }
@@ -77,8 +91,8 @@ class _SplashScreenState extends State<SplashScreen>
             end: Alignment.bottomRight,
             colors: [
               AppTheme.backgroundDark,
-              AppTheme.primaryColor.withOpacity(0.1),
-              AppTheme.secondaryColor.withOpacity(0.1),
+              AppTheme.primaryColor.withValues(alpha: 0.1),
+              AppTheme.secondaryColor.withValues(alpha: 0.1),
             ],
           ),
         ),
@@ -99,7 +113,7 @@ class _SplashScreenState extends State<SplashScreen>
                         height: 120,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          gradient: LinearGradient(
+                          gradient: const LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
@@ -109,7 +123,7 @@ class _SplashScreenState extends State<SplashScreen>
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: AppTheme.primaryColor.withOpacity(0.3),
+                              color: AppTheme.primaryColor.withValues(alpha: 0.3),
                               blurRadius: 30,
                               spreadRadius: 5,
                             ),
@@ -134,7 +148,7 @@ class _SplashScreenState extends State<SplashScreen>
                       
                       // App Name
                       ShaderMask(
-                        shaderCallback: (bounds) => LinearGradient(
+                        shaderCallback: (bounds) => const LinearGradient(
                           colors: [
                             AppTheme.primaryColor,
                             AppTheme.accentColor,
@@ -157,7 +171,7 @@ class _SplashScreenState extends State<SplashScreen>
                         'Secure Solana Wallet',
                         style: TextStyle(
                           fontSize: 16,
-                          color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                          color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
                           letterSpacing: 0.5,
                         ),
                       ),
@@ -170,7 +184,7 @@ class _SplashScreenState extends State<SplashScreen>
                         child: CircularProgressIndicator(
                           strokeWidth: 3,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            AppTheme.primaryColor.withOpacity(0.5),
+                            AppTheme.primaryColor.withValues(alpha: 0.5),
                           ),
                         ),
                       ),

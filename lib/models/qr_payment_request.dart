@@ -1,8 +1,6 @@
 // lib/models/qr_payment_request.dart
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'dart:convert';
-import 'dart:typed_data';
-import 'package:convert/convert.dart';
 
 part 'qr_payment_request.freezed.dart';
 part 'qr_payment_request.g.dart';
@@ -11,14 +9,16 @@ part 'qr_payment_request.g.dart';
 /// Format: myxen:{base64url_encoded_json}
 @freezed
 class QrPaymentRequest with _$QrPaymentRequest {
+  const QrPaymentRequest._(); // Add private constructor for custom getters
+  
   const factory QrPaymentRequest({
-    @Default('1') String v, // version
     required String t, // type: pay_request | invoice
-    @Default('MYXN') String token,
     required String amount,
     required String pubkey,
-    String? memo,
     required String ts, // ISO8601 timestamp
+    @Default('1') String v, // version
+    @Default('MYXN') String token,
+    String? memo,
     String? sig, // optional signature (for invoices)
     @JsonKey(name: 'signer_pubkey') String? signerPubkey,
   }) = _QrPaymentRequest;
@@ -52,7 +52,7 @@ extension QrPaymentRequestX on QrPaymentRequest {
   /// Parse from QR string
   static QrPaymentRequest fromQrString(String qrString) {
     if (!qrString.startsWith('myxen:')) {
-      throw FormatException('Invalid QR format: must start with myxen:');
+      throw const FormatException('Invalid QR format: must start with myxen:');
     }
 
     final base64url = qrString.substring(6);

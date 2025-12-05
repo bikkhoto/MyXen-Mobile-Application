@@ -1,6 +1,6 @@
 // lib/features/kyc/kyc_service.dart
-import 'dart:typed_data';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../core/crypto/encryption/aes_gcm_wrapper.dart';
 import '../../core/crypto/crypto_utils.dart';
@@ -77,7 +77,7 @@ class KycService {
         value: encryptedMetadata.base64,
       );
 
-      print('KYC document stored: $documentType');
+      debugPrint('KYC document stored: $documentType');
     } catch (e) {
       throw Exception('Failed to store KYC document: $e');
     }
@@ -162,7 +162,7 @@ class KycService {
         value: encrypted.base64,
       );
 
-      print('KYC submitted for verification');
+      debugPrint('KYC submitted for verification');
     } catch (e) {
       throw Exception('Failed to submit KYC: $e');
     }

@@ -52,6 +52,7 @@ dependencies:
   permission_handler: ^11.1.0
   device_info_plus: ^9.1.1
   package_info_plus: ^5.0.1
+  flutter_local_notifications: ^17.2.2
 
   # Utils
   equatable: ^2.0.5
@@ -90,7 +91,7 @@ flutter:
 # App Icon Configuration
 flutter_launcher_icons:
   android: true
-  ios: false
+  ios: true
   image_path: "Image/app-icon.png"
   min_sdk_android: 21
   adaptive_icon_background: "#6366F1"

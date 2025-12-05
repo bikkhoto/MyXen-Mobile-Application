@@ -9,7 +9,7 @@ import 'package:myxen/features/settings/security_settings_screen.dart';
 // Mock wrapper to provide necessary ancestors
 class MockWrapper extends StatelessWidget {
   final Widget child;
-  const MockWrapper({super.key, required this.child});
+  const MockWrapper({required this.child, super.key});
 
   @override
   Widget build(BuildContext context) {

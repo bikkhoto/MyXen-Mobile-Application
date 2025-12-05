@@ -1,10 +1,8 @@
 // lib/features/settings/settings_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/auth/biometric_service.dart';
-import '../../providers/wallet_provider.dart';
 import 'security_settings_screen.dart';
 import 'backup_screen.dart';
 import 'about_screen.dart';
@@ -101,7 +99,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   onChanged: (value) {
                     // TODO: Implement theme toggle
                   },
-                  activeColor: AppTheme.primaryColor,
+                  activeThumbColor: AppTheme.primaryColor,
                 ),
               ),
               _buildSettingCard(
@@ -210,7 +208,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         leading: Container(
           padding: const EdgeInsets.all(AppTheme.spacingSm),
           decoration: BoxDecoration(
-            color: (iconColor ?? AppTheme.primaryColor).withOpacity(0.1),
+            color: (iconColor ?? AppTheme.primaryColor).withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(
@@ -231,7 +229,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           subtitle,
           style: TextStyle(
             fontSize: 13,
-            color: AppTheme.textSecondaryDark.withOpacity(0.8),
+            color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
           ),
         ),
         trailing: trailing ??

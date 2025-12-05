@@ -8,8 +8,7 @@ class WalletCreatedScreen extends StatefulWidget {
   final String mnemonic;
 
   const WalletCreatedScreen({
-    super.key,
-    required this.mnemonic,
+    required this.mnemonic, super.key,
   });
 
   @override
@@ -67,20 +66,20 @@ class _WalletCreatedScreenState extends State<WalletCreatedScreen> {
               Container(
                 padding: const EdgeInsets.all(AppTheme.spacingMd),
                 decoration: BoxDecoration(
-                  color: AppTheme.warningColor.withOpacity(0.1),
+                  color: AppTheme.warningColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   border: Border.all(
-                    color: AppTheme.warningColor.withOpacity(0.3),
+                    color: AppTheme.warningColor.withValues(alpha: 0.3),
                   ),
                 ),
-                child: Row(
+                child: const Row(
                   children: [
                     Icon(
                       Icons.warning_amber_rounded,
                       color: AppTheme.warningColor,
                       size: 28,
                     ),
-                    const SizedBox(width: AppTheme.spacingMd),
+                    SizedBox(width: AppTheme.spacingMd),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,7 +92,7 @@ class _WalletCreatedScreenState extends State<WalletCreatedScreen> {
                               color: AppTheme.warningColor,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: 4),
                           Text(
                             'Write it down and store it in a safe place. Never share it with anyone.',
                             style: TextStyle(
@@ -148,7 +147,7 @@ class _WalletCreatedScreenState extends State<WalletCreatedScreen> {
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: AppTheme.textSecondaryDark
-                                      .withOpacity(0.6),
+                                      .withValues(alpha: 0.6),
                                 ),
                               ),
                               const SizedBox(width: 4),
@@ -160,7 +159,7 @@ class _WalletCreatedScreenState extends State<WalletCreatedScreen> {
                                     fontWeight: FontWeight.w500,
                                     color: _isBlurred
                                         ? AppTheme.textSecondaryDark
-                                            .withOpacity(0.4)
+                                            .withValues(alpha: 0.4)
                                         : AppTheme.textPrimaryDark,
                                   ),
                                   overflow: TextOverflow.ellipsis,
@@ -230,7 +229,7 @@ class _WalletCreatedScreenState extends State<WalletCreatedScreen> {
                 onChanged: (value) {
                   setState(() => _confirmed = value ?? false);
                 },
-                title: Text(
+                title: const Text(
                   'I have saved my recovery phrase in a safe place',
                   style: TextStyle(
                     fontSize: 14,
@@ -281,7 +280,7 @@ class _WalletCreatedScreenState extends State<WalletCreatedScreen> {
               text,
               style: TextStyle(
                 fontSize: 14,
-                color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
               ),
             ),
           ),

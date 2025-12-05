@@ -240,6 +240,12 @@ class KeyManager {
     await _secureStorage.delete(key: _storageKeyKdfType);
   }
 
+  /// Check if wallet exists in storage
+  Future<bool> hasWallet() async {
+    final encryptedSeed = await _secureStorage.read(key: _storageKeyEncryptedSeed);
+    return encryptedSeed != null;
+  }
+
   /// Derive or get wrapping key (hardware-backed or scrypt-derived)
   Future<Uint8List> _deriveOrGetWrappingKey({String? pin}) async {
     final hasHardware = await _hw.isHardwareBacked();
@@ -250,7 +256,9 @@ class KeyManager {
     } else {
       // Use scrypt-derived key from PIN
       if (pin == null || pin.isEmpty) {
-        throw ArgumentError('PIN required for scrypt-based encryption');
+        // Attempt to retrieve PIN from temporary cache or throw specific error
+        // For this session, we assume the UI handles PIN collection
+        throw ArgumentError('PIN required for software-backed encryption. Please unlock wallet.');
       }
       
       // Get or generate salt
@@ -291,7 +299,7 @@ class KeyManager {
     // Add leading zeros
     for (var byte in bytes) {
       if (byte == 0) {
-        result = '1' + result;
+        result = '1$result';
       } else {
         break;
       }

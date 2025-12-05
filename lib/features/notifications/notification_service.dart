@@ -1,4 +1,5 @@
 // lib/features/notifications/notification_service.dart
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -131,7 +132,7 @@ class NotificationService {
     final payload = response.payload;
     if (payload != null) {
       // Navigate to transaction details or relevant screen
-      print('Notification tapped: $payload');
+      debugPrint('Notification tapped: $payload');
     }
   }
 

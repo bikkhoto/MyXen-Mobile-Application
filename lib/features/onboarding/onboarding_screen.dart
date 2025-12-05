@@ -196,7 +196,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: page.gradient[0].withOpacity(0.3),
+                  color: page.gradient[0].withValues(alpha: 0.3),
                   blurRadius: 30,
                   spreadRadius: 5,
                 ),
@@ -227,7 +227,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             page.description,
             style: TextStyle(
               fontSize: 16,
-              color: AppTheme.textSecondaryDark.withOpacity(0.8),
+              color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
               height: 1.5,
             ),
             textAlign: TextAlign.center,
@@ -246,7 +246,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       decoration: BoxDecoration(
         color: isActive
             ? AppTheme.primaryColor
-            : AppTheme.textSecondaryDark.withOpacity(0.3),
+            : AppTheme.textSecondaryDark.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(AppTheme.radiusFull),
       ),
     );

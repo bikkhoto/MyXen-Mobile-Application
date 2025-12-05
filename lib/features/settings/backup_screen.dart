@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/auth/biometric_service.dart';
-import '../../core/crypto/key_manager.dart';
-import '../../providers/wallet_provider.dart';
-import '../wallet/wallet_created_screen.dart';
 
 class BackupScreen extends ConsumerStatefulWidget {
   const BackupScreen({super.key});
@@ -80,20 +77,20 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
               Container(
                 padding: const EdgeInsets.all(AppTheme.spacingMd),
                 decoration: BoxDecoration(
-                  color: AppTheme.warningColor.withOpacity(0.1),
+                  color: AppTheme.warningColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   border: Border.all(
-                    color: AppTheme.warningColor.withOpacity(0.3),
+                    color: AppTheme.warningColor.withValues(alpha: 0.3),
                   ),
                 ),
-                child: Row(
+                child: const Row(
                   children: [
                     Icon(
                       Icons.warning_amber_rounded,
                       color: AppTheme.warningColor,
                       size: 28,
                     ),
-                    const SizedBox(width: AppTheme.spacingMd),
+                    SizedBox(width: AppTheme.spacingMd),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,7 +103,7 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
                               color: AppTheme.warningColor,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: 4),
                           Text(
                             'Never share your recovery phrase with anyone. Store it securely offline.',
                             style: TextStyle(
@@ -193,7 +190,7 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
         leading: Container(
           padding: const EdgeInsets.all(AppTheme.spacingMd),
           decoration: BoxDecoration(
-            color: AppTheme.primaryColor.withOpacity(0.1),
+            color: AppTheme.primaryColor.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: isLoading
@@ -216,7 +213,7 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
           subtitle,
           style: TextStyle(
             fontSize: 13,
-            color: AppTheme.textSecondaryDark.withOpacity(0.8),
+            color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
           ),
         ),
         trailing: const Icon(

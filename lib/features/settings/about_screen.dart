@@ -66,7 +66,7 @@ class _AboutScreenState extends State<AboutScreen> {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: AppTheme.primaryColor.withOpacity(0.3),
+                      color: AppTheme.primaryColor.withValues(alpha: 0.3),
                       blurRadius: 20,
                       spreadRadius: 5,
                     ),
@@ -96,7 +96,7 @@ class _AboutScreenState extends State<AboutScreen> {
                 'Version $_version ($_buildNumber)',
                 style: TextStyle(
                   fontSize: 14,
-                  color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                  color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
                 ),
               ),
               const SizedBox(height: AppTheme.spacingXl),
@@ -106,7 +106,7 @@ class _AboutScreenState extends State<AboutScreen> {
                 'A secure Solana-based mobile wallet and payments application with \$MYXN token support.',
                 style: TextStyle(
                   fontSize: 14,
-                  color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                  color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
                   height: 1.5,
                 ),
                 textAlign: TextAlign.center,
@@ -157,7 +157,7 @@ class _AboutScreenState extends State<AboutScreen> {
                 '© 2025 MyXen. All rights reserved.',
                 style: TextStyle(
                   fontSize: 12,
-                  color: AppTheme.textSecondaryDark.withOpacity(0.6),
+                  color: AppTheme.textSecondaryDark.withValues(alpha: 0.6),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -183,7 +183,7 @@ class _AboutScreenState extends State<AboutScreen> {
             Container(
               padding: const EdgeInsets.all(AppTheme.spacingMd),
               decoration: BoxDecoration(
-                color: AppTheme.primaryColor.withOpacity(0.1),
+                color: AppTheme.primaryColor.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, color: AppTheme.primaryColor, size: 24),
@@ -206,7 +206,7 @@ class _AboutScreenState extends State<AboutScreen> {
                     description,
                     style: TextStyle(
                       fontSize: 13,
-                      color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                      color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
                     ),
                   ),
                 ],
@@ -232,7 +232,7 @@ class _AboutScreenState extends State<AboutScreen> {
         leading: Container(
           padding: const EdgeInsets.all(AppTheme.spacingSm),
           decoration: BoxDecoration(
-            color: AppTheme.primaryColor.withOpacity(0.1),
+            color: AppTheme.primaryColor.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: AppTheme.primaryColor, size: 20),
@@ -249,7 +249,7 @@ class _AboutScreenState extends State<AboutScreen> {
           subtitle,
           style: TextStyle(
             fontSize: 13,
-            color: AppTheme.textSecondaryDark.withOpacity(0.8),
+            color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
           ),
         ),
         trailing: const Icon(

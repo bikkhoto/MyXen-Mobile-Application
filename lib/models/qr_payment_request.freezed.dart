@@ -20,14 +20,14 @@ QrPaymentRequest _$QrPaymentRequestFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$QrPaymentRequest {
-  String get v => throw _privateConstructorUsedError; // version
   String get t =>
       throw _privateConstructorUsedError; // type: pay_request | invoice
-  String get token => throw _privateConstructorUsedError;
   String get amount => throw _privateConstructorUsedError;
   String get pubkey => throw _privateConstructorUsedError;
-  String? get memo => throw _privateConstructorUsedError;
   String get ts => throw _privateConstructorUsedError; // ISO8601 timestamp
+  String get v => throw _privateConstructorUsedError; // version
+  String get token => throw _privateConstructorUsedError;
+  String? get memo => throw _privateConstructorUsedError;
   String? get sig =>
       throw _privateConstructorUsedError; // optional signature (for invoices)
   @JsonKey(name: 'signer_pubkey')
@@ -46,13 +46,13 @@ abstract class $QrPaymentRequestCopyWith<$Res> {
       _$QrPaymentRequestCopyWithImpl<$Res, QrPaymentRequest>;
   @useResult
   $Res call(
-      {String v,
-      String t,
-      String token,
+      {String t,
       String amount,
       String pubkey,
-      String? memo,
       String ts,
+      String v,
+      String token,
+      String? memo,
       String? sig,
       @JsonKey(name: 'signer_pubkey') String? signerPubkey});
 }
@@ -70,28 +70,20 @@ class _$QrPaymentRequestCopyWithImpl<$Res, $Val extends QrPaymentRequest>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? v = null,
     Object? t = null,
-    Object? token = null,
     Object? amount = null,
     Object? pubkey = null,
-    Object? memo = freezed,
     Object? ts = null,
+    Object? v = null,
+    Object? token = null,
+    Object? memo = freezed,
     Object? sig = freezed,
     Object? signerPubkey = freezed,
   }) {
     return _then(_value.copyWith(
-      v: null == v
-          ? _value.v
-          : v // ignore: cast_nullable_to_non_nullable
-              as String,
       t: null == t
           ? _value.t
           : t // ignore: cast_nullable_to_non_nullable
-              as String,
-      token: null == token
-          ? _value.token
-          : token // ignore: cast_nullable_to_non_nullable
               as String,
       amount: null == amount
           ? _value.amount
@@ -101,14 +93,22 @@ class _$QrPaymentRequestCopyWithImpl<$Res, $Val extends QrPaymentRequest>
           ? _value.pubkey
           : pubkey // ignore: cast_nullable_to_non_nullable
               as String,
-      memo: freezed == memo
-          ? _value.memo
-          : memo // ignore: cast_nullable_to_non_nullable
-              as String?,
       ts: null == ts
           ? _value.ts
           : ts // ignore: cast_nullable_to_non_nullable
               as String,
+      v: null == v
+          ? _value.v
+          : v // ignore: cast_nullable_to_non_nullable
+              as String,
+      token: null == token
+          ? _value.token
+          : token // ignore: cast_nullable_to_non_nullable
+              as String,
+      memo: freezed == memo
+          ? _value.memo
+          : memo // ignore: cast_nullable_to_non_nullable
+              as String?,
       sig: freezed == sig
           ? _value.sig
           : sig // ignore: cast_nullable_to_non_nullable
@@ -130,13 +130,13 @@ abstract class _$$QrPaymentRequestImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String v,
-      String t,
-      String token,
+      {String t,
       String amount,
       String pubkey,
-      String? memo,
       String ts,
+      String v,
+      String token,
+      String? memo,
       String? sig,
       @JsonKey(name: 'signer_pubkey') String? signerPubkey});
 }
@@ -152,28 +152,20 @@ class __$$QrPaymentRequestImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? v = null,
     Object? t = null,
-    Object? token = null,
     Object? amount = null,
     Object? pubkey = null,
-    Object? memo = freezed,
     Object? ts = null,
+    Object? v = null,
+    Object? token = null,
+    Object? memo = freezed,
     Object? sig = freezed,
     Object? signerPubkey = freezed,
   }) {
     return _then(_$QrPaymentRequestImpl(
-      v: null == v
-          ? _value.v
-          : v // ignore: cast_nullable_to_non_nullable
-              as String,
       t: null == t
           ? _value.t
           : t // ignore: cast_nullable_to_non_nullable
-              as String,
-      token: null == token
-          ? _value.token
-          : token // ignore: cast_nullable_to_non_nullable
               as String,
       amount: null == amount
           ? _value.amount
@@ -183,14 +175,22 @@ class __$$QrPaymentRequestImplCopyWithImpl<$Res>
           ? _value.pubkey
           : pubkey // ignore: cast_nullable_to_non_nullable
               as String,
-      memo: freezed == memo
-          ? _value.memo
-          : memo // ignore: cast_nullable_to_non_nullable
-              as String?,
       ts: null == ts
           ? _value.ts
           : ts // ignore: cast_nullable_to_non_nullable
               as String,
+      v: null == v
+          ? _value.v
+          : v // ignore: cast_nullable_to_non_nullable
+              as String,
+      token: null == token
+          ? _value.token
+          : token // ignore: cast_nullable_to_non_nullable
+              as String,
+      memo: freezed == memo
+          ? _value.memo
+          : memo // ignore: cast_nullable_to_non_nullable
+              as String?,
       sig: freezed == sig
           ? _value.sig
           : sig // ignore: cast_nullable_to_non_nullable
@@ -205,40 +205,41 @@ class __$$QrPaymentRequestImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$QrPaymentRequestImpl implements _QrPaymentRequest {
+class _$QrPaymentRequestImpl extends _QrPaymentRequest {
   const _$QrPaymentRequestImpl(
-      {this.v = '1',
-      required this.t,
-      this.token = 'MYXN',
+      {required this.t,
       required this.amount,
       required this.pubkey,
-      this.memo,
       required this.ts,
+      this.v = '1',
+      this.token = 'MYXN',
+      this.memo,
       this.sig,
-      @JsonKey(name: 'signer_pubkey') this.signerPubkey});
+      @JsonKey(name: 'signer_pubkey') this.signerPubkey})
+      : super._();
 
   factory _$QrPaymentRequestImpl.fromJson(Map<String, dynamic> json) =>
       _$$QrPaymentRequestImplFromJson(json);
 
   @override
-  @JsonKey()
-  final String v;
-// version
-  @override
   final String t;
 // type: pay_request | invoice
-  @override
-  @JsonKey()
-  final String token;
   @override
   final String amount;
   @override
   final String pubkey;
   @override
-  final String? memo;
-  @override
   final String ts;
 // ISO8601 timestamp
+  @override
+  @JsonKey()
+  final String v;
+// version
+  @override
+  @JsonKey()
+  final String token;
+  @override
+  final String? memo;
   @override
   final String? sig;
 // optional signature (for invoices)
@@ -248,7 +249,7 @@ class _$QrPaymentRequestImpl implements _QrPaymentRequest {
 
   @override
   String toString() {
-    return 'QrPaymentRequest(v: $v, t: $t, token: $token, amount: $amount, pubkey: $pubkey, memo: $memo, ts: $ts, sig: $sig, signerPubkey: $signerPubkey)';
+    return 'QrPaymentRequest(t: $t, amount: $amount, pubkey: $pubkey, ts: $ts, v: $v, token: $token, memo: $memo, sig: $sig, signerPubkey: $signerPubkey)';
   }
 
   @override
@@ -256,13 +257,13 @@ class _$QrPaymentRequestImpl implements _QrPaymentRequest {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$QrPaymentRequestImpl &&
-            (identical(other.v, v) || other.v == v) &&
             (identical(other.t, t) || other.t == t) &&
-            (identical(other.token, token) || other.token == token) &&
             (identical(other.amount, amount) || other.amount == amount) &&
             (identical(other.pubkey, pubkey) || other.pubkey == pubkey) &&
-            (identical(other.memo, memo) || other.memo == memo) &&
             (identical(other.ts, ts) || other.ts == ts) &&
+            (identical(other.v, v) || other.v == v) &&
+            (identical(other.token, token) || other.token == token) &&
+            (identical(other.memo, memo) || other.memo == memo) &&
             (identical(other.sig, sig) || other.sig == sig) &&
             (identical(other.signerPubkey, signerPubkey) ||
                 other.signerPubkey == signerPubkey));
@@ -271,7 +272,7 @@ class _$QrPaymentRequestImpl implements _QrPaymentRequest {
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-      runtimeType, v, t, token, amount, pubkey, memo, ts, sig, signerPubkey);
+      runtimeType, t, amount, pubkey, ts, v, token, memo, sig, signerPubkey);
 
   @JsonKey(ignore: true)
   @override
@@ -288,37 +289,38 @@ class _$QrPaymentRequestImpl implements _QrPaymentRequest {
   }
 }
 
-abstract class _QrPaymentRequest implements QrPaymentRequest {
+abstract class _QrPaymentRequest extends QrPaymentRequest {
   const factory _QrPaymentRequest(
-          {final String v,
-          required final String t,
-          final String token,
+          {required final String t,
           required final String amount,
           required final String pubkey,
-          final String? memo,
           required final String ts,
+          final String v,
+          final String token,
+          final String? memo,
           final String? sig,
           @JsonKey(name: 'signer_pubkey') final String? signerPubkey}) =
       _$QrPaymentRequestImpl;
+  const _QrPaymentRequest._() : super._();
 
   factory _QrPaymentRequest.fromJson(Map<String, dynamic> json) =
       _$QrPaymentRequestImpl.fromJson;
 
   @override
-  String get v;
-  @override // version
   String get t;
   @override // type: pay_request | invoice
-  String get token;
-  @override
   String get amount;
   @override
   String get pubkey;
   @override
-  String? get memo;
-  @override
   String get ts;
   @override // ISO8601 timestamp
+  String get v;
+  @override // version
+  String get token;
+  @override
+  String? get memo;
+  @override
   String? get sig;
   @override // optional signature (for invoices)
   @JsonKey(name: 'signer_pubkey')

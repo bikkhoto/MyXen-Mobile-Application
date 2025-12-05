@@ -1,6 +1,6 @@
 // lib/providers/transaction_provider.dart
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../core/network/solana_client.dart';
 import '../models/transaction_model.dart';
 import 'wallet_provider.dart';
 
@@ -45,7 +45,7 @@ final transactionHistoryProvider =
             final from = accountKeys?.isNotEmpty == true
                 ? accountKeys![0] as String
                 : publicKey;
-            final to = accountKeys?.length ?? 0 > 1
+            final to = (accountKeys?.length ?? 0) > 1
                 ? accountKeys![1] as String
                 : publicKey;
 
@@ -68,7 +68,7 @@ final transactionHistoryProvider =
           }
         }
       } catch (e) {
-        print('Error parsing transaction: $e');
+        debugPrint('Error parsing transaction: $e');
       }
     }
 

@@ -1,6 +1,7 @@
 // lib/core/crypto/encryption/scrypt_wrapper.dart
 import 'dart:typed_data';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:pointycastle/export.dart';
 
 /// scrypt key derivation wrapper
@@ -36,14 +37,20 @@ class ScryptWrapper {
       throw ArgumentError('Salt must be at least 8 bytes');
     }
 
-    final scrypt = Scrypt();
-    final params = ScryptParameters(N, r, p, dkLen, actualSalt);
-    
-    final pinBytes = Uint8List.fromList(pin.codeUnits);
-    
+    // Prepare parameters for isolate
+    final params = _ScryptParams(
+      pin: pin,
+      salt: actualSalt,
+      N: N,
+      r: r,
+      p: p,
+      dkLen: dkLen,
+    );
+
     try {
-      final derivedKey = scrypt.process(pinBytes);
-      return Uint8List.fromList(derivedKey);
+      // Run scrypt in a background isolate to avoid blocking the UI thread
+      final derivedKey = await compute(_runScrypt, params);
+      return derivedKey;
     } catch (e) {
       throw Exception('scrypt key derivation failed: $e');
     }
@@ -89,4 +96,39 @@ class ScryptWrapper {
       'saltLen': 16,
     };
   }
+}
+
+/// Parameters container for passing to isolate
+class _ScryptParams {
+  final String pin;
+  final Uint8List salt;
+  final int N;
+  final int r;
+  final int p;
+  final int dkLen;
+
+  _ScryptParams({
+    required this.pin,
+    required this.salt,
+    required this.N,
+    required this.r,
+    required this.p,
+    required this.dkLen,
+  });
+}
+
+/// Top-level function for isolate execution
+Uint8List _runScrypt(_ScryptParams params) {
+  final scrypt = Scrypt();
+  scrypt.init(ScryptParameters(
+    params.N,
+    params.r,
+    params.p,
+    params.dkLen,
+    params.salt,
+  ));
+  
+  final pinBytes = Uint8List.fromList(params.pin.codeUnits);
+  final key = scrypt.process(pinBytes);
+  return Uint8List.fromList(key);
 }
