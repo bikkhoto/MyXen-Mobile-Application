@@ -112,6 +112,7 @@ class _KycScreenState extends ConsumerState<KycScreen> {
     );
 
     if (!authenticated) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Authentication required'),

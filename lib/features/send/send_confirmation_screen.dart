@@ -32,7 +32,7 @@ class _SendConfirmationScreenState
 
       if (mounted) {
         // Show success
-        showDialog(
+        await showDialog(
           context: context,
           barrierDismissible: false,
           builder: (context) => _buildSuccessDialog(),

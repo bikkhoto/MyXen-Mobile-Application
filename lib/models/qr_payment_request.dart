@@ -20,7 +20,6 @@ class QrPaymentRequest with _$QrPaymentRequest {
     @Default('MYXN') String token,
     String? memo,
     String? sig, // optional signature (for invoices)
-    // ignore: invalid_annotation_target
     @JsonKey(name: 'signer_pubkey') String? signerPubkey,
   }) = _QrPaymentRequest;
 

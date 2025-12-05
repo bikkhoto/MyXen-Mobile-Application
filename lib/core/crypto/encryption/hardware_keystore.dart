@@ -1,4 +1,5 @@
 // lib/core/crypto/encryption/hardware_keystore.dart
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 /// Platform adapter for hardware-backed keystore
@@ -16,7 +17,7 @@ class HardwareKeystore {
       final result = await _channel.invokeMethod<bool>('isHardwareBacked');
       return result ?? false;
     } on PlatformException catch (e) {
-      print('Error checking hardware keystore: ${e.message}');
+      debugPrint('Error checking hardware keystore: ${e.message}');
       return false;
     }
   }
@@ -58,7 +59,7 @@ class HardwareKeystore {
       );
       return result?['keyHandle'] as String?;
     } on PlatformException catch (e) {
-      print('Error getting key handle: ${e.message}');
+      debugPrint('Error getting key handle: ${e.message}');
       return null;
     }
   }
@@ -74,7 +75,7 @@ class HardwareKeystore {
       );
       return result?['status'] == 'deleted';
     } on PlatformException catch (e) {
-      print('Error deleting key: ${e.message}');
+      debugPrint('Error deleting key: ${e.message}');
       return false;
     }
   }
@@ -89,7 +90,7 @@ class HardwareKeystore {
       );
       return Map<String, dynamic>.from(result ?? {});
     } on PlatformException catch (e) {
-      print('Error getting platform info: ${e.message}');
+      debugPrint('Error getting platform info: ${e.message}');
       return {
         'os': 'unknown',
         'version': 'unknown',
@@ -106,7 +107,7 @@ class HardwareKeystore {
         'enabled': enabled,
       });
     } on PlatformException catch (e) {
-      print('Mock mode not available: ${e.message}');
+      debugPrint('Mock mode not available: ${e.message}');
     }
   }
 
@@ -119,7 +120,7 @@ class HardwareKeystore {
       );
       return result ?? Uint8List(32); // Fallback to zeros (should not happen)
     } on PlatformException catch (e) {
-      print('Error getting wrapped key: ${e.message}');
+      debugPrint('Error getting wrapped key: ${e.message}');
       // Return placeholder for now (platform implementation required)
       return Uint8List.fromList(List<int>.generate(32, (_) => 0x42));
     }
