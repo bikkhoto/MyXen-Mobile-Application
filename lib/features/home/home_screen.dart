@@ -8,6 +8,7 @@ import '../send/send_screen.dart';
 import '../receive/receive_screen.dart';
 import '../settings/settings_screen.dart';
 import '../../models/wallet_model.dart';
+import '../../providers/session_provider.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -35,7 +36,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _initializeWallet() async {
     try {
       final keyManager = ref.read(keyManagerProvider);
-      final publicKey = await keyManager.getPublicKeyBase58();
+      final pin = ref.read(sessionPinProvider);
+      final publicKey = await keyManager.getPublicKeyBase58(pin: pin);
       if (publicKey != null) {
         ref.read(walletPublicKeyProvider.notifier).state = publicKey;
       }
@@ -227,15 +229,49 @@ class WalletTab extends ConsumerWidget {
                     data: (wallet) => Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          '${wallet?.formattedBalance ?? '0.00'} MYXN',
-                          style: const TextStyle(
-                            fontSize: 36,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Text(
+                              wallet?.formattedBalance ?? '0.00',
+                              style: const TextStyle(
+                                fontSize: 36,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'MYXN',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white70,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            '${wallet?.formattedSolBalance ?? '0.0000'} SOL',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 8),
                         Text(
                           '≈ \$${((wallet?.myxnBalance ?? 0.0) * 0.1).toStringAsFixed(2)} USD',
                           style: TextStyle(

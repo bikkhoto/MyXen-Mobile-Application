@@ -1,18 +1,20 @@
 // lib/features/wallet/create_wallet_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/crypto/key_manager.dart';
+import '../../providers/session_provider.dart';
 import 'wallet_created_screen.dart';
 
-class CreateWalletScreen extends StatefulWidget {
+class CreateWalletScreen extends ConsumerStatefulWidget {
   const CreateWalletScreen({super.key});
 
   @override
-  State<CreateWalletScreen> createState() => _CreateWalletScreenState();
+  ConsumerState<CreateWalletScreen> createState() => _CreateWalletScreenState();
 }
 
-class _CreateWalletScreenState extends State<CreateWalletScreen> {
+class _CreateWalletScreenState extends ConsumerState<CreateWalletScreen> {
   final _pinController = TextEditingController();
   final _confirmPinController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -43,6 +45,11 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
       final mnemonic = await keyManager.createWallet(
         pin: _pinController.text,
       );
+
+      // Store PIN in session for immediate use
+      if (mounted) {
+        ref.read(sessionPinProvider.notifier).state = _pinController.text;
+      }
 
       if (mounted) {
         await Navigator.of(context).pushReplacement(

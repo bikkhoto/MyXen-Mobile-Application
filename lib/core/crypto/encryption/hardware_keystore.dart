@@ -16,6 +16,9 @@ class HardwareKeystore {
     try {
       final result = await _channel.invokeMethod<bool>('isHardwareBacked');
       return result ?? false;
+    } on MissingPluginException {
+      debugPrint('Hardware keystore plugin not found - falling back to software encryption');
+      return false;
     } on PlatformException catch (e) {
       debugPrint('Error checking hardware keystore: ${e.message}');
       return false;

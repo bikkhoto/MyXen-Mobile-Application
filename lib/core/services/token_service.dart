@@ -1,3 +1,4 @@
+import 'dart:math';
 // lib/core/services/token_service.dart
 import 'package:flutter/foundation.dart';
 import '../network/api_config.dart';
@@ -110,7 +111,7 @@ class TokenService {
         
         return TokenSupplyInfo(
           rawSupply: supply,
-          displaySupply: supply / (10 * decimals),
+          displaySupply: supply / pow(10, decimals),
           decimals: decimals,
           mintAuthority: info['mintAuthority'] as String?,
           freezeAuthority: info['freezeAuthority'] as String?,

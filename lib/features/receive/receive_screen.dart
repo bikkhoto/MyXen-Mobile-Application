@@ -8,6 +8,7 @@ import '../../core/theme/app_theme.dart';
 import '../../providers/wallet_provider.dart';
 import '../../models/qr_payment_request.dart';
 
+import '../../providers/session_provider.dart';
 class ReceiveScreen extends ConsumerStatefulWidget {
   const ReceiveScreen({super.key});
 
@@ -20,6 +21,30 @@ class _ReceiveScreenState extends ConsumerState<ReceiveScreen> {
   final _memoController = TextEditingController();
   bool _showQR = false;
   String? _qrData;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize wallet public key if null
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (ref.read(walletPublicKeyProvider) == null) {
+        _initializeWallet();
+      }
+    });
+  }
+
+  Future<void> _initializeWallet() async {
+    try {
+      final keyManager = ref.read(keyManagerProvider);
+      final pin = ref.read(sessionPinProvider);
+      final publicKey = await keyManager.getPublicKeyBase58(pin: pin);
+      if (publicKey != null) {
+        ref.read(walletPublicKeyProvider.notifier).state = publicKey;
+      }
+    } catch (e) {
+      debugPrint('Error initializing wallet in receive screen: $e');
+    }
+  }
 
   @override
   void dispose() {
