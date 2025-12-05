@@ -1,3 +1,4 @@
+import 'dart:math';
 // lib/core/network/api_config.dart
 
 /// API Configuration for MyXen Mobile App
@@ -11,7 +12,7 @@ class ApiConfig {
   // ─────────────────────────────────────────────────────────────────────────────
   
   /// Set to true for mainnet deployment
-  static const bool isProduction = true;
+  static const bool isProduction = false;
   
   /// Solana cluster identifier
   static const String solanaCluster = isProduction ? 'mainnet-beta' : 'devnet';
@@ -208,12 +209,12 @@ class ApiConfig {
   
   /// Convert token amount to display format
   static double tokensToDisplay(int rawAmount, {int decimals = myxnDecimals}) {
-    return rawAmount / (10 * decimals);
+    return rawAmount / pow(10, decimals);
   }
   
   /// Convert display amount to raw token amount
   static int displayToTokens(double displayAmount, {int decimals = myxnDecimals}) {
-    return (displayAmount * (10 * decimals)).round();
+    return (displayAmount * pow(10, decimals)).round();
   }
   
   /// Check if an address is an official MyXen wallet

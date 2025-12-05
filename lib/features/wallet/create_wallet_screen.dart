@@ -51,7 +51,9 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
           ),
         );
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint('Error creating wallet: $e');
+      debugPrint('Stack trace: $stackTrace');
       _showError('Failed to create wallet: $e');
     } finally {
       if (mounted) {
