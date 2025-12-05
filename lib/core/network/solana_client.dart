@@ -1,7 +1,5 @@
 // lib/core/network/solana_client.dart
 import 'package:dio/dio.dart';
-import 'dart:convert';
-import 'dart:typed_data';
 
 /// Solana RPC Client for blockchain interactions
 class SolanaClient {

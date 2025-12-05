@@ -169,12 +169,12 @@ class _SecuritySettingsScreenState
           subtitle,
           style: TextStyle(
             fontSize: 13,
-            color: AppTheme.textSecondaryDark.withOpacity(0.8),
+            color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
           ),
         ),
         value: value,
         onChanged: onChanged,
-        activeColor: AppTheme.primaryColor,
+        activeThumbColor: AppTheme.primaryColor,
       ),
     );
   }
@@ -193,7 +193,7 @@ class _SecuritySettingsScreenState
         leading: Container(
           padding: const EdgeInsets.all(AppTheme.spacingSm),
           decoration: BoxDecoration(
-            color: AppTheme.primaryColor.withOpacity(0.1),
+            color: AppTheme.primaryColor.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: AppTheme.primaryColor),
@@ -210,7 +210,7 @@ class _SecuritySettingsScreenState
           subtitle,
           style: TextStyle(
             fontSize: 13,
-            color: AppTheme.textSecondaryDark.withOpacity(0.8),
+            color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
           ),
         ),
         trailing: const Icon(

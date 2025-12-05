@@ -45,7 +45,7 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
       );
 
       if (mounted) {
-        Navigator.of(context).pushReplacement(
+        await Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => WalletCreatedScreen(mnemonic: mnemonic),
           ),
@@ -102,7 +102,7 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
                   'Create a 6-digit PIN to secure your wallet. This PIN will be used to encrypt your wallet data.',
                   style: TextStyle(
                     fontSize: 14,
-                    color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                    color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
                     height: 1.5,
                   ),
                 ),
@@ -179,20 +179,20 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
                 Container(
                   padding: const EdgeInsets.all(AppTheme.spacingMd),
                   decoration: BoxDecoration(
-                    color: AppTheme.infoColor.withOpacity(0.1),
+                    color: AppTheme.infoColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     border: Border.all(
-                      color: AppTheme.infoColor.withOpacity(0.3),
+                      color: AppTheme.infoColor.withValues(alpha: 0.3),
                     ),
                   ),
-                  child: Row(
+                  child: const Row(
                     children: [
                       Icon(
                         Icons.info_outline,
                         color: AppTheme.infoColor,
                         size: 24,
                       ),
-                      const SizedBox(width: AppTheme.spacingMd),
+                      SizedBox(width: AppTheme.spacingMd),
                       Expanded(
                         child: Text(
                           'Your PIN is used to encrypt your wallet. Never share it with anyone.',
@@ -214,7 +214,7 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
                   onChanged: (value) {
                     setState(() => _agreedToTerms = value ?? false);
                   },
-                  title: Text(
+                  title: const Text(
                     'I agree to the Terms and Conditions',
                     style: TextStyle(
                       fontSize: 14,

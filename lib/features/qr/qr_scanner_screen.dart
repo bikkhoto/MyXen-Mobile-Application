@@ -162,7 +162,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
                   Container(
                     padding: const EdgeInsets.all(AppTheme.spacingMd),
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.7),
+                      color: Colors.black.withValues(alpha: 0.7),
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     ),
                     child: const Text(
@@ -180,7 +180,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
                     'Supports myxen: format and Solana addresses',
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.white.withOpacity(0.7),
+                      color: Colors.white.withValues(alpha: 0.7),
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -199,7 +199,7 @@ class ScannerOverlay extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.black.withOpacity(0.5)
+      ..color = Colors.black.withValues(alpha: 0.5)
       ..style = PaintingStyle.fill;
 
     final scanArea = Rect.fromCenter(
@@ -222,7 +222,7 @@ class ScannerOverlay extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4;
 
-    final bracketLength = 30.0;
+    const bracketLength = 30.0;
 
     // Top-left
     canvas.drawLine(

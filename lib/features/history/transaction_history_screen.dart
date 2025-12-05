@@ -90,7 +90,7 @@ class TransactionHistoryScreen extends ConsumerWidget {
                   color: (isReceived
                           ? AppTheme.successColor
                           : AppTheme.primaryColor)
-                      .withOpacity(0.1),
+                      .withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -121,7 +121,7 @@ class TransactionHistoryScreen extends ConsumerWidget {
                       _shortenAddress(otherAddress),
                       style: TextStyle(
                         fontSize: 13,
-                        color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                        color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
                         fontFamily: 'monospace',
                       ),
                     ),
@@ -130,7 +130,7 @@ class TransactionHistoryScreen extends ConsumerWidget {
                       _formatDate(tx.timestamp),
                       style: TextStyle(
                         fontSize: 12,
-                        color: AppTheme.textSecondaryDark.withOpacity(0.6),
+                        color: AppTheme.textSecondaryDark.withValues(alpha: 0.6),
                       ),
                     ),
                   ],
@@ -156,7 +156,7 @@ class TransactionHistoryScreen extends ConsumerWidget {
                     tx.token,
                     style: TextStyle(
                       fontSize: 12,
-                      color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                      color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -199,7 +199,7 @@ class TransactionHistoryScreen extends ConsumerWidget {
         vertical: 2,
       ),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
       ),
       child: Text(
@@ -221,7 +221,7 @@ class TransactionHistoryScreen extends ConsumerWidget {
           Icon(
             Icons.receipt_long_outlined,
             size: 64,
-            color: AppTheme.textSecondaryDark.withOpacity(0.5),
+            color: AppTheme.textSecondaryDark.withValues(alpha: 0.5),
           ),
           const SizedBox(height: AppTheme.spacingLg),
           Text(
@@ -229,7 +229,7 @@ class TransactionHistoryScreen extends ConsumerWidget {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: AppTheme.textSecondaryDark.withOpacity(0.7),
+              color: AppTheme.textSecondaryDark.withValues(alpha: 0.7),
             ),
           ),
           const SizedBox(height: AppTheme.spacingSm),
@@ -237,7 +237,7 @@ class TransactionHistoryScreen extends ConsumerWidget {
             'Your transaction history will appear here',
             style: TextStyle(
               fontSize: 14,
-              color: AppTheme.textSecondaryDark.withOpacity(0.5),
+              color: AppTheme.textSecondaryDark.withValues(alpha: 0.5),
             ),
           ),
         ],

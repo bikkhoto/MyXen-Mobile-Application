@@ -1,7 +1,5 @@
 // lib/core/network/solana_transaction_builder.dart
 import 'dart:typed_data';
-import 'package:convert/convert.dart';
-import '../crypto/crypto_utils.dart';
 
 /// Solana Transaction Builder
 /// 

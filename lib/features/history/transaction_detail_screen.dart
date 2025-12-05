@@ -11,8 +11,7 @@ class TransactionDetailScreen extends StatelessWidget {
   final Transaction transaction;
 
   const TransactionDetailScreen({
-    super.key,
-    required this.transaction,
+    required this.transaction, super.key,
   });
 
   @override
@@ -46,7 +45,7 @@ class TransactionDetailScreen extends StatelessWidget {
                     'Amount',
                     style: TextStyle(
                       fontSize: 14,
-                      color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                      color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
                     ),
                   ),
                   const SizedBox(height: AppTheme.spacingSm),
@@ -64,7 +63,7 @@ class TransactionDetailScreen extends StatelessWidget {
                       'Fee: ${transaction.fee!.toStringAsFixed(6)} SOL',
                       style: TextStyle(
                         fontSize: 14,
-                        color: AppTheme.textSecondaryDark.withOpacity(0.7),
+                        color: AppTheme.textSecondaryDark.withValues(alpha: 0.7),
                       ),
                     ),
                   ],
@@ -130,9 +129,9 @@ class TransactionDetailScreen extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(AppTheme.spacingLg),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
@@ -155,7 +154,7 @@ class TransactionDetailScreen extends StatelessWidget {
                   _getStatusDescription(),
                   style: TextStyle(
                     fontSize: 13,
-                    color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                    color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
                   ),
                 ),
               ],
@@ -205,7 +204,7 @@ class TransactionDetailScreen extends StatelessWidget {
               label,
               style: TextStyle(
                 fontSize: 14,
-                color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
               ),
             ),
           ),

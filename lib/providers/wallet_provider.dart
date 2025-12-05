@@ -1,4 +1,5 @@
 // lib/providers/wallet_provider.dart
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/crypto/key_manager.dart';
 import '../core/network/solana_client.dart';
@@ -44,7 +45,7 @@ final walletBalanceProvider = FutureProvider<WalletModel?>((ref) async {
       }
     } catch (e) {
       // Token account might not exist yet
-      print('No MYXN token account: $e');
+      debugPrint('No MYXN token account: $e');
     }
 
     return WalletModel(

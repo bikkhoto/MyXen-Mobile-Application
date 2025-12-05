@@ -46,7 +46,7 @@ class _RestoreWalletScreenState extends State<RestoreWalletScreen> {
           ),
         );
 
-        Navigator.of(context).pushAndRemoveUntil(
+        await Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const HomeScreen()),
           (route) => false,
         );
@@ -102,7 +102,7 @@ class _RestoreWalletScreenState extends State<RestoreWalletScreen> {
                   'Enter your 12-word recovery phrase to restore your wallet.',
                   style: TextStyle(
                     fontSize: 14,
-                    color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                    color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
                     height: 1.5,
                   ),
                 ),
@@ -165,20 +165,20 @@ class _RestoreWalletScreenState extends State<RestoreWalletScreen> {
                 Container(
                   padding: const EdgeInsets.all(AppTheme.spacingMd),
                   decoration: BoxDecoration(
-                    color: AppTheme.warningColor.withOpacity(0.1),
+                    color: AppTheme.warningColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     border: Border.all(
-                      color: AppTheme.warningColor.withOpacity(0.3),
+                      color: AppTheme.warningColor.withValues(alpha: 0.3),
                     ),
                   ),
-                  child: Row(
+                  child: const Row(
                     children: [
                       Icon(
                         Icons.warning_amber_rounded,
                         color: AppTheme.warningColor,
                         size: 24,
                       ),
-                      const SizedBox(width: AppTheme.spacingMd),
+                      SizedBox(width: AppTheme.spacingMd),
                       Expanded(
                         child: Text(
                           'Make sure you are in a private place. Never share your recovery phrase.',

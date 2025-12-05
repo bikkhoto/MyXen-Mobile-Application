@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/app_theme.dart';
-import '../../core/network/api_config.dart';
 import '../home/home_screen.dart';
 
 class SendConfirmationScreen extends ConsumerStatefulWidget {
@@ -11,9 +10,7 @@ class SendConfirmationScreen extends ConsumerStatefulWidget {
   final String? memo;
 
   const SendConfirmationScreen({
-    super.key,
-    required this.recipient,
-    required this.amount,
+    required this.recipient, required this.amount, super.key,
     this.memo,
   });
 
@@ -71,7 +68,7 @@ class _SendConfirmationScreenState
             Container(
               padding: const EdgeInsets.all(AppTheme.spacingLg),
               decoration: BoxDecoration(
-                color: AppTheme.successColor.withOpacity(0.1),
+                color: AppTheme.successColor.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -94,7 +91,7 @@ class _SendConfirmationScreenState
               'Your transaction is being processed',
               style: TextStyle(
                 fontSize: 14,
-                color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
               ),
               textAlign: TextAlign.center,
             ),
@@ -141,7 +138,7 @@ class _SendConfirmationScreenState
                             'You are sending',
                             style: TextStyle(
                               fontSize: 14,
-                              color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                              color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
                             ),
                           ),
                           const SizedBox(height: AppTheme.spacingSm),
@@ -158,7 +155,7 @@ class _SendConfirmationScreenState
                             '≈ \$${(widget.amount * 0.1).toStringAsFixed(2)} USD',
                             style: TextStyle(
                               fontSize: 16,
-                              color: AppTheme.textSecondaryDark.withOpacity(0.7),
+                              color: AppTheme.textSecondaryDark.withValues(alpha: 0.7),
                             ),
                           ),
                         ],
@@ -174,20 +171,20 @@ class _SendConfirmationScreenState
                     Container(
                       padding: const EdgeInsets.all(AppTheme.spacingMd),
                       decoration: BoxDecoration(
-                        color: AppTheme.warningColor.withOpacity(0.1),
+                        color: AppTheme.warningColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                         border: Border.all(
-                          color: AppTheme.warningColor.withOpacity(0.3),
+                          color: AppTheme.warningColor.withValues(alpha: 0.3),
                         ),
                       ),
-                      child: Row(
+                      child: const Row(
                         children: [
                           Icon(
                             Icons.info_outline,
                             color: AppTheme.warningColor,
                             size: 20,
                           ),
-                          const SizedBox(width: AppTheme.spacingMd),
+                          SizedBox(width: AppTheme.spacingMd),
                           Expanded(
                             child: Text(
                               'Double-check the recipient address. Transactions cannot be reversed.',
@@ -269,7 +266,7 @@ class _SendConfirmationScreenState
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 14,
             color: AppTheme.textSecondaryDark,
           ),

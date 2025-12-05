@@ -37,7 +37,7 @@ class ScryptWrapper {
     }
 
     final scrypt = Scrypt();
-    final params = ScryptParameters(N, r, p, dkLen, actualSalt);
+    scrypt.init(ScryptParameters(N, r, p, dkLen, actualSalt));
     
     final pinBytes = Uint8List.fromList(pin.codeUnits);
     

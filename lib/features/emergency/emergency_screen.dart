@@ -159,20 +159,20 @@ class _EmergencyScreenState extends ConsumerState<EmergencyScreen> {
                   Container(
                     padding: const EdgeInsets.all(AppTheme.spacingMd),
                     decoration: BoxDecoration(
-                      color: AppTheme.errorColor.withOpacity(0.1),
+                      color: AppTheme.errorColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                       border: Border.all(
-                        color: AppTheme.errorColor.withOpacity(0.3),
+                        color: AppTheme.errorColor.withValues(alpha: 0.3),
                       ),
                     ),
-                    child: Row(
+                    child: const Row(
                       children: [
                         Icon(
                           Icons.warning_amber_rounded,
                           color: AppTheme.errorColor,
                           size: 32,
                         ),
-                        const SizedBox(width: AppTheme.spacingMd),
+                        SizedBox(width: AppTheme.spacingMd),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,7 +185,7 @@ class _EmergencyScreenState extends ConsumerState<EmergencyScreen> {
                                   color: AppTheme.errorColor,
                                 ),
                               ),
-                              const SizedBox(height: 4),
+                              SizedBox(height: 4),
                               Text(
                                 'Only use in genuine emergencies. Your recovery phrase will be sent to emergency contacts.',
                                 style: TextStyle(
@@ -220,12 +220,12 @@ class _EmergencyScreenState extends ConsumerState<EmergencyScreen> {
                             : 'Add contacts and enable SOS',
                         style: TextStyle(
                           fontSize: 13,
-                          color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                          color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
                         ),
                       ),
                       value: _sosEnabled,
                       onChanged: _toggleSos,
-                      activeColor: AppTheme.errorColor,
+                      activeThumbColor: AppTheme.errorColor,
                     ),
                   ),
                   const SizedBox(height: AppTheme.spacingXl),
@@ -262,14 +262,14 @@ class _EmergencyScreenState extends ConsumerState<EmergencyScreen> {
                               Icon(
                                 Icons.contacts_outlined,
                                 size: 48,
-                                color: AppTheme.textSecondaryDark.withOpacity(0.5),
+                                color: AppTheme.textSecondaryDark.withValues(alpha: 0.5),
                               ),
                               const SizedBox(height: AppTheme.spacingMd),
                               Text(
                                 'No emergency contacts',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: AppTheme.textSecondaryDark.withOpacity(0.7),
+                                  color: AppTheme.textSecondaryDark.withValues(alpha: 0.7),
                                 ),
                               ),
                             ],
@@ -285,7 +285,7 @@ class _EmergencyScreenState extends ConsumerState<EmergencyScreen> {
                             leading: Container(
                               padding: const EdgeInsets.all(AppTheme.spacingSm),
                               decoration: BoxDecoration(
-                                color: AppTheme.primaryColor.withOpacity(0.1),
+                                color: AppTheme.primaryColor.withValues(alpha: 0.1),
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(
@@ -305,7 +305,7 @@ class _EmergencyScreenState extends ConsumerState<EmergencyScreen> {
                               '${contact.email}\n${contact.relationship}',
                               style: TextStyle(
                                 fontSize: 13,
-                                color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                                color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
                               ),
                             ),
                             trailing: IconButton(
@@ -402,7 +402,7 @@ class _AddContactDialogState extends State<AddContactDialog> {
                 keyboardType: TextInputType.phone,
               ),
               DropdownButtonFormField<String>(
-                value: _relationship,
+                initialValue: _relationship,
                 decoration: const InputDecoration(labelText: 'Relationship'),
                 items: const [
                   DropdownMenuItem(value: 'family', child: Text('Family')),

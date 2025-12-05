@@ -1,7 +1,6 @@
 // lib/core/crypto/signer.dart
 import 'dart:typed_data';
 import 'package:ed25519_edwards/ed25519_edwards.dart' as ed25519;
-import 'package:convert/convert.dart';
 import 'key_manager.dart';
 import 'crypto_utils.dart';
 
@@ -108,7 +107,7 @@ class Signer {
       // Zeroize private key
       zeroize(privKey);
       
-      return Uint8List.fromList(publicKey);
+      return Uint8List.fromList(publicKey.bytes);
     } catch (e) {
       zeroize(privKey);
       throw Exception('Failed to get public key: $e');

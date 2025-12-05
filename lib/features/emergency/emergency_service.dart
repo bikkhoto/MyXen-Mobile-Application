@@ -1,6 +1,8 @@
 // lib/features/emergency/emergency_service.dart
-import 'dart:typed_data';
+import 'dart:convert';
+
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../core/crypto/encryption/aes_gcm_wrapper.dart';
 import '../../core/crypto/crypto_utils.dart';
@@ -85,8 +87,8 @@ class EmergencyService {
       
       final jsonString = String.fromCharCodes(decrypted);
       // Parse JSON and convert to list of contacts
-      // Simplified for now
-      return [];
+      final parsed = jsonDecode(jsonString) as List<dynamic>;
+      return parsed.map((e) => EmergencyContact.fromJson(e as Map<String, dynamic>)).toList();
     } catch (e) {
       return [];
     }
@@ -174,9 +176,9 @@ class EmergencyService {
 
       // In production, this would send emails/SMS to contacts
       // For now, just log
-      print('SOS triggered: $reason');
-      print('Contacts notified: ${contacts.length}');
-      print('Payload: ${payload.substring(0, 20)}...');
+      debugPrint('SOS triggered: $reason');
+      debugPrint('Contacts notified: ${contacts.length}');
+      debugPrint('Payload: ${payload.substring(0, 20)}...');
 
       // Record SOS event
       await _recordSosEvent(reason, additionalMessage);
@@ -244,8 +246,7 @@ class EmergencyContact {
   EmergencyContact({
     required this.name,
     required this.email,
-    this.phone,
-    required this.relationship,
+    required this.relationship, this.phone,
   });
 
   Map<String, dynamic> toJson() => {

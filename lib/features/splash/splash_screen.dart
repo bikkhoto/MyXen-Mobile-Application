@@ -77,8 +77,8 @@ class _SplashScreenState extends State<SplashScreen>
             end: Alignment.bottomRight,
             colors: [
               AppTheme.backgroundDark,
-              AppTheme.primaryColor.withOpacity(0.1),
-              AppTheme.secondaryColor.withOpacity(0.1),
+              AppTheme.primaryColor.withValues(alpha: 0.1),
+              AppTheme.secondaryColor.withValues(alpha: 0.1),
             ],
           ),
         ),
@@ -99,7 +99,7 @@ class _SplashScreenState extends State<SplashScreen>
                         height: 120,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          gradient: LinearGradient(
+                          gradient: const LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
@@ -109,7 +109,7 @@ class _SplashScreenState extends State<SplashScreen>
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: AppTheme.primaryColor.withOpacity(0.3),
+                              color: AppTheme.primaryColor.withValues(alpha: 0.3),
                               blurRadius: 30,
                               spreadRadius: 5,
                             ),
@@ -134,7 +134,7 @@ class _SplashScreenState extends State<SplashScreen>
                       
                       // App Name
                       ShaderMask(
-                        shaderCallback: (bounds) => LinearGradient(
+                        shaderCallback: (bounds) => const LinearGradient(
                           colors: [
                             AppTheme.primaryColor,
                             AppTheme.accentColor,
@@ -157,7 +157,7 @@ class _SplashScreenState extends State<SplashScreen>
                         'Secure Solana Wallet',
                         style: TextStyle(
                           fontSize: 16,
-                          color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                          color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
                           letterSpacing: 0.5,
                         ),
                       ),
@@ -170,7 +170,7 @@ class _SplashScreenState extends State<SplashScreen>
                         child: CircularProgressIndicator(
                           strokeWidth: 3,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            AppTheme.primaryColor.withOpacity(0.5),
+                            AppTheme.primaryColor.withValues(alpha: 0.5),
                           ),
                         ),
                       ),

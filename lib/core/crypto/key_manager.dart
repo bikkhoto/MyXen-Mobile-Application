@@ -291,7 +291,7 @@ class KeyManager {
     // Add leading zeros
     for (var byte in bytes) {
       if (byte == 0) {
-        result = '1' + result;
+        result = '1$result';
       } else {
         break;
       }

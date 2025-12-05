@@ -110,13 +110,13 @@ class _SendScreenState extends ConsumerState<SendScreen> {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        AppTheme.primaryColor.withOpacity(0.1),
-                        AppTheme.secondaryColor.withOpacity(0.1),
+                        AppTheme.primaryColor.withValues(alpha: 0.1),
+                        AppTheme.secondaryColor.withValues(alpha: 0.1),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                     border: Border.all(
-                      color: AppTheme.primaryColor.withOpacity(0.3),
+                      color: AppTheme.primaryColor.withValues(alpha: 0.3),
                     ),
                   ),
                   child: Column(
@@ -126,7 +126,7 @@ class _SendScreenState extends ConsumerState<SendScreen> {
                         'Available Balance',
                         style: TextStyle(
                           fontSize: 14,
-                          color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                          color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
                         ),
                       ),
                       const SizedBox(height: AppTheme.spacingSm),
@@ -230,7 +230,7 @@ class _SendScreenState extends ConsumerState<SendScreen> {
                     color: AppTheme.surfaceDark,
                     borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                   ),
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(

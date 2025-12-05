@@ -40,7 +40,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ref.read(walletPublicKeyProvider.notifier).state = publicKey;
       }
     } catch (e) {
-      print('Error initializing wallet: $e');
+      debugPrint('Error initializing wallet: $e');
     }
   }
 
@@ -54,7 +54,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           color: AppTheme.surfaceDark,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, -2),
             ),
@@ -92,7 +92,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppTheme.primaryColor.withOpacity(0.1)
+              ? AppTheme.primaryColor.withValues(alpha: 0.1)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         ),
@@ -149,7 +149,7 @@ class WalletTab extends ConsumerWidget {
                       'Welcome Back',
                       style: TextStyle(
                         fontSize: 14,
-                        color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                        color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -206,7 +206,7 @@ class WalletTab extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                 boxShadow: [
                   BoxShadow(
-                    color: AppTheme.primaryColor.withOpacity(0.3),
+                    color: AppTheme.primaryColor.withValues(alpha: 0.3),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -219,7 +219,7 @@ class WalletTab extends ConsumerWidget {
                     'Total Balance',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                     ),
                   ),
                   const SizedBox(height: AppTheme.spacingSm),
@@ -240,7 +240,7 @@ class WalletTab extends ConsumerWidget {
                           '≈ \$${((wallet?.myxnBalance ?? 0.0) * 0.1).toStringAsFixed(2)} USD',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                           ),
                         ),
                       ],
@@ -350,7 +350,7 @@ class WalletTab extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(AppTheme.spacingMd),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, color: color, size: 24),
@@ -358,7 +358,7 @@ class WalletTab extends ConsumerWidget {
             const SizedBox(height: AppTheme.spacingSm),
             Text(
               label,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
                 color: AppTheme.textSecondaryDark,
               ),
@@ -382,14 +382,14 @@ class WalletTab extends ConsumerWidget {
             Icon(
               Icons.receipt_long_outlined,
               size: 48,
-              color: AppTheme.textSecondaryDark.withOpacity(0.5),
+              color: AppTheme.textSecondaryDark.withValues(alpha: 0.5),
             ),
             const SizedBox(height: AppTheme.spacingMd),
             Text(
               'No transactions yet',
               style: TextStyle(
                 fontSize: 16,
-                color: AppTheme.textSecondaryDark.withOpacity(0.7),
+                color: AppTheme.textSecondaryDark.withValues(alpha: 0.7),
               ),
             ),
           ],
@@ -459,7 +459,7 @@ class HistoryTab extends ConsumerWidget {
                         Icon(
                           Icons.receipt_long_outlined,
                           size: 64,
-                          color: AppTheme.textSecondaryDark.withOpacity(0.5),
+                          color: AppTheme.textSecondaryDark.withValues(alpha: 0.5),
                         ),
                         const SizedBox(height: AppTheme.spacingLg),
                         Text(
@@ -467,7 +467,7 @@ class HistoryTab extends ConsumerWidget {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
-                            color: AppTheme.textSecondaryDark.withOpacity(0.7),
+                            color: AppTheme.textSecondaryDark.withValues(alpha: 0.7),
                           ),
                         ),
                       ],
@@ -494,7 +494,7 @@ class HistoryTab extends ConsumerWidget {
                             color: (isReceived
                                     ? AppTheme.successColor
                                     : AppTheme.primaryColor)
-                                .withOpacity(0.1),
+                                .withValues(alpha: 0.1),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
@@ -516,12 +516,12 @@ class HistoryTab extends ConsumerWidget {
                         subtitle: Text(
                           '${tx.amount.toStringAsFixed(2)} ${tx.token}',
                           style: TextStyle(
-                            color: AppTheme.textSecondaryDark.withOpacity(0.8),
+                            color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
                           ),
                         ),
                         trailing: Text(
                           tx.status,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 12,
                             color: AppTheme.successColor,
                           ),
@@ -532,7 +532,7 @@ class HistoryTab extends ConsumerWidget {
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(
+              error: (error, stack) => const Center(
                 child: Text(
                   'Error loading transactions',
                   style: TextStyle(

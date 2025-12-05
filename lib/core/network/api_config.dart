@@ -37,13 +37,13 @@ class ApiConfig {
 
   // Transaction explorer link
   static String getTransactionUrl(String signature) {
-    final network = isProduction ? '' : '?cluster=devnet';
+    const network = isProduction ? '' : '?cluster=devnet';
     return '$explorerUrl/tx/$signature$network';
   }
 
   // Account explorer link
   static String getAccountUrl(String address) {
-    final network = isProduction ? '' : '?cluster=devnet';
+    const network = isProduction ? '' : '?cluster=devnet';
     return '$explorerUrl/account/$address$network';
   }
 

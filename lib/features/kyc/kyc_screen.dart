@@ -262,7 +262,7 @@ class _KycScreenState extends ConsumerState<KycScreen> {
                           const SizedBox(height: AppTheme.spacingMd),
                           
                           DropdownButtonFormField<String>(
-                            value: _documentType,
+                            initialValue: _documentType,
                             decoration: const InputDecoration(
                               labelText: 'Document Type',
                               prefixIcon: Icon(Icons.badge),
@@ -382,9 +382,9 @@ class _KycScreenState extends ConsumerState<KycScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(AppTheme.spacingLg),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -401,7 +401,7 @@ class _KycScreenState extends ConsumerState<KycScreen> {
           const SizedBox(height: AppTheme.spacingSm),
           Text(
             _status.description,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14,
               color: AppTheme.textSecondaryDark,
             ),
@@ -410,13 +410,13 @@ class _KycScreenState extends ConsumerState<KycScreen> {
           const SizedBox(height: AppTheme.spacingMd),
           LinearProgressIndicator(
             value: _completionPercentage / 100,
-            backgroundColor: color.withOpacity(0.2),
+            backgroundColor: color.withValues(alpha: 0.2),
             valueColor: AlwaysStoppedAnimation<Color>(color),
           ),
           const SizedBox(height: AppTheme.spacingSm),
           Text(
             '$_completionPercentage% Complete',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 12,
               color: AppTheme.textSecondaryDark,
             ),
@@ -447,7 +447,7 @@ class _KycScreenState extends ConsumerState<KycScreen> {
           image != null ? 'Uploaded' : 'Tap to upload',
           style: TextStyle(
             fontSize: 13,
-            color: AppTheme.textSecondaryDark.withOpacity(0.8),
+            color: AppTheme.textSecondaryDark.withValues(alpha: 0.8),
           ),
         ),
         trailing: const Icon(
